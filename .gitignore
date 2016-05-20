@@ -2,3 +2,9 @@
 /biomixer.launch
 /gwt-unitCache
 /www-test
+
+# IntelliJ
+.idea/
+*.iml
+
+
