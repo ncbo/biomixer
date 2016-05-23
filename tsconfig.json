@@ -3,8 +3,5 @@
     "rootDir": "typescript-source",
     "outDir": "war/d3_graphs/typescript-output",
     "sourceMap": true
-  },  
-  "exclude": [
-    "typescript-source/headers"
-  ]
+  }
 }
