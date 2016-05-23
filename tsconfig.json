@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "rootDir": "typescript-source",
-    "outDir": "war/d3_graphs/typescript-output"
+    "outDir": "war/d3_graphs/typescript-output",
     "sourceMap": true
   },  
   "exclude": [
