@@ -1,5 +1,9 @@
 {
-	"exclude": [
+  "compilerOptions": {
+    "rootDir": "typescript-source",
+    "outDir": "war/d3_graphs/typescript-output"
+  },  
+  "exclude": [
     "typescript-source/headers"
   ]
 }
