@@ -7,4 +7,4 @@
 .idea/
 *.iml
 
-
+war/d3_graphs/typescript-output/**/*.js.map
