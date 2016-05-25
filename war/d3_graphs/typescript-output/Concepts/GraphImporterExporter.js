@@ -4,11 +4,10 @@
 ///<amd-dependency path="Concepts/ConceptGraph" />
 ///<amd-dependency path="Menu" />
 ///<amd-dependency path="ExpansionSets" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph", "../Menu", "../ExpansionSets", "Utils", "FetchFromApi", "GraphView", "Concepts/ConceptGraph", "Menu", "ExpansionSets"], function (require, exports, Fetcher, GraphView, ConceptGraph, Menu, ExpansionSets) {
     /**
@@ -28,21 +27,20 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
         function SavedGraphSeed() {
         }
         return SavedGraphSeed;
-    })();
+    }());
     exports.SavedGraphSeed = SavedGraphSeed;
     var SavedGraph = (function () {
         function SavedGraph() {
-            this.NB = "Greetings! This is a BioMixer portable graph." + " Paste this entire data structure into the Import dialog box, accessible via the menu." + " Use the url: " + SavedGraph.getUrlIFrameOrNot() + " .";
+            this.NB = "Greetings! This is a BioMixer portable graph."
+                + " Paste this entire data structure into the Import dialog box, accessible via the menu."
+                + " Use the url: " + SavedGraph.getUrlIFrameOrNot() + " .";
             this.n = [];
             this.s = {}; // Store styles here, just colors for now. Not much format.
         }
         SavedGraph.prototype.addNode = function (nodeData, graph) {
             // Would make the graph an instance variable, but then it would get serialized later.
             var nodeSeed = {
-                c: nodeData.simpleConceptUri,
-                o: nodeData.ontologyAcronym,
-                x: nodeData.x,
-                y: nodeData.y
+                c: nodeData.simpleConceptUri, o: nodeData.ontologyAcronym, x: nodeData.x, y: nodeData.y
             };
             if (graph.expMan.wasConceptClearedForExpansion(nodeData.nodeId, ConceptGraph.PathOptionConstants.mappingsNeighborhoodConstant)) {
                 nodeSeed.m = true;
@@ -56,7 +54,7 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
             return document.location.protocol + '//' + document.location.host + document.location.pathname;
         };
         return SavedGraph;
-    })();
+    }());
     exports.SavedGraph = SavedGraph;
     var Widget = (function () {
         function Widget(pathsToRoot) {
@@ -69,8 +67,22 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
             var innerContainer = this.containers.inner;
             this.menuSelector = menuSelector; // store for later
             $(menuSelector).append(outerContainer);
-            var exportButton = $("<div>").addClass("unselectable").addClass("importExportButton").addClass("boxButton").attr("id", "exportButton").attr("type", "button").text("Export").attr("value", "Export");
-            var importButton = $("<div>").addClass("unselectable").addClass("importExportButton").addClass("boxButton").attr("id", "importButton").attr("type", "button").text("Import").attr("value", "Import");
+            var exportButton = $("<div>")
+                .addClass("unselectable")
+                .addClass("importExportButton")
+                .addClass("boxButton")
+                .attr("id", "exportButton")
+                .attr("type", "button")
+                .text("Export")
+                .attr("value", "Export");
+            var importButton = $("<div>")
+                .addClass("unselectable")
+                .addClass("importExportButton")
+                .addClass("boxButton")
+                .attr("id", "importButton")
+                .attr("type", "button")
+                .text("Import")
+                .attr("value", "Import");
             var firstCol = $("<div>").css("float", "left");
             var secondCol = $("<div>").css("float", "left");
             var footer = $("<div>").attr("id", Widget.exportImportFooterDiv).css("clear", "both");
@@ -96,7 +108,8 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
         Widget.prototype.showExportDialogLambda = function () {
             var _this = this;
             return function () {
-                var message = "To share this graph view, copy the text below, and share it via email." + "\nThe receiver can then click the import button, paste the text there, and see this current view.";
+                var message = "To share this graph view, copy the text below, and share it via email."
+                    + "\nThe receiver can then click the import button, paste the text there, and see this current view.";
                 var exporter = new GraphExporter(_this.pathsToRoot.conceptGraph, _this.pathsToRoot);
                 var exportJson = exporter.getExportData();
                 _this.messagePrompt(message, JSON.stringify(exportJson), null);
@@ -116,9 +129,7 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
                 var dialog = $("#" + Widget.messageDivId);
                 var messageField = $("#" + Widget.messageTextId);
                 var importData = messageField.first().val();
-                dialog.slideUp(200, function () {
-                    dialog.detach();
-                });
+                dialog.slideUp(200, function () { dialog.detach(); });
                 if (importData.length === 0) {
                     return;
                 }
@@ -129,9 +140,7 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
         Widget.prototype.closeDialogLambda = function () {
             return function (event) {
                 var dialog = $("#" + Widget.messageDivId);
-                dialog.slideUp(200, function () {
-                    dialog.detach();
-                });
+                dialog.slideUp(200, function () { dialog.detach(); });
             };
         };
         Widget.prototype.messagePrompt = function (message, fieldContent, okCallback) {
@@ -156,11 +165,24 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
                 okButtonText = "Close";
             }
             else {
-                cancelButton = $("<div>").addClass("boxButton").addClass("unselectable").addClass(Widget.messageBoxButtonClass).addClass("importExportButton").text("Cancel").click(this.closeDialogLambda());
+                cancelButton = $("<div>")
+                    .addClass("boxButton")
+                    .addClass("unselectable")
+                    .addClass(Widget.messageBoxButtonClass)
+                    .addClass("importExportButton")
+                    .text("Cancel").click(this.closeDialogLambda());
                 okButtonText = "Apply";
             }
-            var okButton = $("<div>").addClass("boxButton").addClass("unselectable").addClass(Widget.messageBoxButtonClass).addClass("importExportButton").text(okButtonText).click(okCallback);
-            dialog.append(messageParagraph).append(messageField).append(okButton);
+            var okButton = $("<div>")
+                .addClass("boxButton")
+                .addClass("unselectable")
+                .addClass(Widget.messageBoxButtonClass)
+                .addClass("importExportButton")
+                .text(okButtonText).click(okCallback);
+            dialog
+                .append(messageParagraph)
+                .append(messageField)
+                .append(okButton);
             if (undefined !== cancelButton) {
                 dialog.append(cancelButton);
             }
@@ -177,7 +199,7 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
         Widget.messageDivClass = "messageBoxWithField";
         Widget.messageBoxButtonClass = "messageBoxButton";
         return Widget;
-    })();
+    }());
     exports.Widget = Widget;
     var GraphExporter = (function () {
         function GraphExporter(graph, pathsToRoot) {
@@ -194,6 +216,9 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
                 var nodeData = _this.graph.getNodeByIdUri(nodeId);
                 savedGraph.addNode(nodeData, _this.graph);
             });
+            // Also store colors from arcs, in case the user changed them
+            // Make a selector for the stylesheet that will work as a partial match, save their
+            // colors and CSS rule names.
             for (var i = 0; i < this.pathsToRoot.propertyRelationClassNames.length; i++) {
                 var className = this.pathsToRoot.propertyRelationClassNames[i];
                 var sheet = $.stylesheet("." + className);
@@ -203,7 +228,7 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
             return savedGraph;
         };
         return GraphExporter;
-    })();
+    }());
     exports.GraphExporter = GraphExporter;
     var GraphImporter = (function () {
         function GraphImporter(pathsToRoot, importData) {
@@ -228,6 +253,7 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
             // The init set has the expansion set I would otherwise have made, but is the right way to delete and add at the same time.
             // var expansionSet = new ExpansionSets.ExpansionSet<ConceptGraph.Node>(expId, null, this.conceptGraph, this.pathsToRoot.undoRedoBoss, null);
             GraphImporter.importNumber++;
+            // Import edge styles before the edges get here, then the nodes.
             for (var className in this.importData.s) {
                 var color = this.importData.s[className];
                 var sheet = $.stylesheet("." + className);
@@ -260,7 +286,7 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
         };
         GraphImporter.importNumber = 0;
         return GraphImporter;
-    })();
+    }());
     exports.GraphImporter = GraphImporter;
     /**
      * We need to set the node positions, but only after we have actually parsed and built the node.
@@ -286,5 +312,6 @@ define(["require", "exports", "../FetchFromApi", "../GraphView", "./ConceptGraph
             this.wrappedCallback = new ConceptGraph.FetchOneConceptCallback(graph, url, conceptUri, expansionSet);
         }
         return FetchAndApplyLayoutCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
 });
+//# sourceMappingURL=GraphImporterExporter.js.map

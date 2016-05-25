@@ -65,6 +65,7 @@ define(["require", "exports", "../Utils", "../GraphView", "Concepts/ConceptGraph
             //        $( "#top-mappings-slider-amount" ).text( "Top "+ mappingMin + " - " + mappingMax );
         };
         return ConceptRangeSliders;
-    })();
+    }());
     exports.ConceptRangeSliders = ConceptRangeSliders;
 });
+//# sourceMappingURL=ConceptFilterSliders.js.map

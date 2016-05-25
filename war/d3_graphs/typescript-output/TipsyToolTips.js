@@ -64,7 +64,7 @@ define(["require", "exports", "GraphView"], function (require, exports) {
                         }
                         // console.log("Location "+location);
                         return location;
-                    },
+                    }
                 });
             }
             function enter() {
@@ -91,13 +91,7 @@ define(["require", "exports", "GraphView"], function (require, exports) {
                         outerThis.lastDisplayedTipsyData = meData;
                         outerThis.lastDisplayedTipsySvg = me;
                         // For the tipsy specific listeners, change opacity.
-                        tipsy.mouseenter(function () {
-                            tipsy.css("opacity", 1.0);
-                            enter();
-                        }).mouseleave(function () {
-                            tipsy.css("opacity", 0.8);
-                            leave();
-                        });
+                        tipsy.mouseenter(function () { tipsy.css("opacity", 1.0); enter(); }).mouseleave(function () { tipsy.css("opacity", 0.8); leave(); });
                         tipsy.mouseover(function () {
                             tipsy.css("opacity", 1.0);
                             clearTimeout(leaveMissedTimer);
@@ -119,3 +113,4 @@ define(["require", "exports", "GraphView"], function (require, exports) {
     }
     exports.nodeTooltipOnHoverLambda = nodeTooltipOnHoverLambda;
 });
+//# sourceMappingURL=TipsyToolTips.js.map

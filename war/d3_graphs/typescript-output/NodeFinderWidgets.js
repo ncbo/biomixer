@@ -10,21 +10,49 @@ define(["require", "exports", "./Menu", "GraphView", "Menu"], function (require,
             var containers = Menu.Menu.slideToggleHeaderContainer("nodeFinderMenuContainer" + "OuterContainer", "nodeFinderMenuContainer" + "ScrollContainer", "Node Utilities", defaultHideContainer);
             var layoutsContainer = containers.inner;
             $(menuSelector).append(containers.outer);
-            var searchInput = $("<input>").addClass(NodeFinder.locateNodesInputClass).attr("title", NodeFinder.locateNodesButtonText).attr("id", "findNodeInputBox");
+            var searchInput = $("<input>")
+                .addClass(NodeFinder.locateNodesInputClass)
+                .attr("title", NodeFinder.locateNodesButtonText)
+                .attr("id", "findNodeInputBox");
             var findFunc = this.highlightNodeNameMatches(this.graphModel, this.graphView, searchInput);
-            var searchButton = $("<div>").attr("id", "nodeNameSearchButton").addClass("unselectable").addClass("boxButton").attr("title", NodeFinder.locateNodesButtonText).append($("<div>").addClass("unselectable").addClass(NodeFinder.locateNodesButtonClass).addClass(NodeFinder.iconButton)).append($("<label>").text("Locate Node").css("padding-top", "2px").css("padding-bottom", "-2px").addClass("unselectable").addClass("plainBoxButton"));
+            var searchButton = $("<div>")
+                .attr("id", "nodeNameSearchButton")
+                .addClass("unselectable")
+                .addClass("boxButton")
+                .attr("title", NodeFinder.locateNodesButtonText)
+                .append($("<div>")
+                .addClass("unselectable")
+                .addClass(NodeFinder.locateNodesButtonClass)
+                .addClass(NodeFinder.iconButton))
+                .append($("<label>")
+                .text("Locate Node")
+                .css("padding-top", "2px")
+                .css("padding-bottom", "-2px")
+                .addClass("unselectable")
+                .addClass("plainBoxButton"));
             var searchDiv = $("<div>").addClass(NodeFinder.nodeUtilityContainer).addClass("clearfix");
             searchDiv.append(searchInput);
             searchDiv.append(searchButton);
             layoutsContainer.append(searchDiv);
-            var addUriInput = $("<input>").addClass(NodeFinder.locateNodesInputClass).attr("id", NodeFinder.singleNodeImportFieldId).addClass(NodeFinder.singleNodeImportFieldId);
-            var addUriButton = $("<label>").addClass("unselectable").addClass("addSingleConceptButton").addClass(NodeFinder.singleNodeImportButtonClass).addClass("plainBoxButton").addClass("boxButton").text("Add Concept Using URI");
-            var addUriDiv = $("<div>").addClass(NodeFinder.nodeUtilityContainer).addClass("clearfix").attr("title", NodeFinder.nodeAdditionText);
+            var addUriInput = $("<input>")
+                .addClass(NodeFinder.locateNodesInputClass)
+                .attr("id", NodeFinder.singleNodeImportFieldId).addClass(NodeFinder.singleNodeImportFieldId);
+            var addUriButton = $("<label>")
+                .addClass("unselectable")
+                .addClass("addSingleConceptButton")
+                .addClass(NodeFinder.singleNodeImportButtonClass)
+                .addClass("plainBoxButton")
+                .addClass("boxButton")
+                .text("Add Concept Using URI");
+            var addUriDiv = $("<div>").addClass(NodeFinder.nodeUtilityContainer).addClass("clearfix")
+                .attr("title", NodeFinder.nodeAdditionText);
             addUriDiv.append(addUriInput);
             addUriDiv.append(addUriButton);
             layoutsContainer.append(addUriDiv);
-            addUriButton.click(this.importSingleNodeCallbackLambda());
-            searchInput.on("keydown", function (event) {
+            addUriButton
+                .click(this.importSingleNodeCallbackLambda());
+            searchInput
+                .on("keydown", function (event) {
                 if (event.which === 13) {
                     event.preventDefault();
                     findFunc();
@@ -32,10 +60,9 @@ define(["require", "exports", "./Menu", "GraphView", "Menu"], function (require,
                 // console.log(event.keyCode);
             });
             // for the button, after click or Enter key press, move focus back to the input box for nicer interactions.
-            searchButton.on("click", function () {
-                findFunc();
-                searchInput.focus();
-            }).on("keydown", function (event) {
+            searchButton
+                .on("click", function () { findFunc(); searchInput.focus(); })
+                .on("keydown", function (event) {
                 if (event.which === 13) {
                     event.preventDefault();
                     findFunc();
@@ -78,6 +105,7 @@ define(["require", "exports", "./Menu", "GraphView", "Menu"], function (require,
         NodeFinder.iconButton = "boxButtonIconSegment";
         NodeFinder.locateNodesButtonText = "Locate nodes in graph based on Name/Synonyms";
         return NodeFinder;
-    })();
+    }());
     exports.NodeFinder = NodeFinder;
 });
+//# sourceMappingURL=NodeFinderWidgets.js.map

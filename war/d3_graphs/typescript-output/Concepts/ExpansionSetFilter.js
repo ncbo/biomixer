@@ -5,11 +5,10 @@
 ///<amd-dependency path="./ConceptGraph" />
 ///<amd-dependency path="../GraphView" />
 ///<amd-dependency path="../ExpansionSets" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../NodeFilterWidget", "./ConceptNodeFilterWidget", "../Utils", "../NodeFilterWidget", "./ConceptNodeFilterWidget", "./ConceptPathsToRoot", "./ConceptGraph", "../GraphView", "../ExpansionSets"], function (require, exports, FilterWidget, ConceptFilterWidget) {
     /**
@@ -200,6 +199,7 @@ define(["require", "exports", "../NodeFilterWidget", "./ConceptNodeFilterWidget"
         };
         ExpansionSetFilter.SUB_MENU_TITLE = "Node Expansion Sets Displayed";
         return ExpansionSetFilter;
-    })(ConceptFilterWidget.AbstractConceptNodeFilterWidget);
+    }(ConceptFilterWidget.AbstractConceptNodeFilterWidget));
     exports.ExpansionSetFilter = ExpansionSetFilter;
 });
+//# sourceMappingURL=ExpansionSetFilter.js.map

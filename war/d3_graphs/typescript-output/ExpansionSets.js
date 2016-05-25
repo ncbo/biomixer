@@ -101,7 +101,7 @@ define(["require", "exports", "./GraphModifierCommand", "UndoRedo/UndoRedoManage
             return this.id.getDisplayId() + " [" + this.nodes.length + "]";
         };
         return ExpansionSet;
-    })();
+    }());
     exports.ExpansionSet = ExpansionSet;
     var ExpansionSetIdentifer = (function () {
         // Only assign raw concept URI to this string
@@ -117,6 +117,7 @@ define(["require", "exports", "./GraphModifierCommand", "UndoRedo/UndoRedoManage
             this.displayId = newString;
         };
         return ExpansionSetIdentifer;
-    })();
+    }());
     exports.ExpansionSetIdentifer = ExpansionSetIdentifer;
 });
+//# sourceMappingURL=ExpansionSets.js.map

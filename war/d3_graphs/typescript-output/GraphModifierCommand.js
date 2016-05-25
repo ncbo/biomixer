@@ -1,9 +1,8 @@
 ///<reference path="headers/require.d.ts" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "UndoRedo/UndoRedoManager", "GraphView", "ExpansionSets", "DeletionSet", "LayoutProvider"], function (require, exports) {
     /**
@@ -16,8 +15,7 @@ define(["require", "exports", "UndoRedo/UndoRedoManager", "GraphView", "Expansio
             this.graph = graph;
             this.fixedLayout = {};
             this.displayNameChangeCallbacks = {};
-            this.activeStepCallback = function (command) {
-            };
+            this.activeStepCallback = function (command) { };
             this.finalSnapshotTaken = false;
             this.cutShort = false;
         }
@@ -75,12 +73,14 @@ define(["require", "exports", "UndoRedo/UndoRedoManager", "GraphView", "Expansio
             }
         };
         CommonImplementor.prototype.displayNameUpdated = function () {
+            // TODO Inherent leak as we accumulate then fail tod elete targets herein.
+            // Should not cost much, but should fix.
             for (var key in this.displayNameChangeCallbacks) {
                 this.displayNameChangeCallbacks[key]();
             }
         };
         return CommonImplementor;
-    })();
+    }());
     exports.CommonImplementor = CommonImplementor;
     /**
      * This command allows for the addition of nodes (and undo and redo). Edges are not really
@@ -172,7 +172,7 @@ define(["require", "exports", "UndoRedo/UndoRedoManager", "GraphView", "Expansio
         GraphAddNodesCommand.addedNodeInteraction = "added node";
         GraphAddNodesCommand.counter = 0;
         return GraphAddNodesCommand;
-    })(CommonImplementor);
+    }(CommonImplementor));
     exports.GraphAddNodesCommand = GraphAddNodesCommand;
     var GraphRemoveNodesCommand = (function (_super) {
         __extends(GraphRemoveNodesCommand, _super);
@@ -235,7 +235,7 @@ define(["require", "exports", "UndoRedo/UndoRedoManager", "GraphView", "Expansio
         GraphRemoveNodesCommand.deletionNodeInteraction = "deleted node";
         GraphRemoveNodesCommand.counter = 0;
         return GraphRemoveNodesCommand;
-    })(CommonImplementor);
+    }(CommonImplementor));
     exports.GraphRemoveNodesCommand = GraphRemoveNodesCommand;
     var GraphCompositeNodeCommand = (function (_super) {
         __extends(GraphCompositeNodeCommand, _super);
@@ -304,6 +304,7 @@ define(["require", "exports", "UndoRedo/UndoRedoManager", "GraphView", "Expansio
             this.additionSet.getGraphModifier().addExtraInteraction(nodeId, interactionType);
         };
         GraphCompositeNodeCommand.prototype.nodeInteraction = function (nodeId) {
+            // We look in reverse at all the composite commands
             for (var i = this.commands.length - 1; i >= 0; i--) {
                 var interactions = this.commands[i].nodeInteraction(nodeId);
                 if (null !== interactions) {
@@ -314,6 +315,7 @@ define(["require", "exports", "UndoRedo/UndoRedoManager", "GraphView", "Expansio
         };
         GraphCompositeNodeCommand.counter = 0;
         return GraphCompositeNodeCommand;
-    })(CommonImplementor);
+    }(CommonImplementor));
     exports.GraphCompositeNodeCommand = GraphCompositeNodeCommand;
 });
+//# sourceMappingURL=GraphModifierCommand.js.map

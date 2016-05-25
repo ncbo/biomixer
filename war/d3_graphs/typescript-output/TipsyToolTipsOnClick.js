@@ -8,7 +8,9 @@ define(["require", "exports", './GraphView', "GraphView"], function (require, ex
             if (event === undefined) {
                 tipsyOwner.tipsy("hide");
             }
-            else if ($(event.target).attr("id") !== tipsyOwner.attr("id") && $(event.target).parent().attr("id") !== tipsyOwner.attr("id") && event.target !== tipsyItem) {
+            else if ($(event.target).attr("id") !== tipsyOwner.attr("id")
+                && $(event.target).parent().attr("id") !== tipsyOwner.attr("id")
+                && event.target !== tipsyItem) {
                 tipsyOwner.tipsy("hide"); // $(me) down below
             }
         });
@@ -53,7 +55,7 @@ define(["require", "exports", './GraphView', "GraphView"], function (require, ex
                         }
                         // console.log("Location "+location);
                         return location;
-                    },
+                    }
                 });
             }
             var mostRecentNodePosition;
@@ -96,11 +98,7 @@ define(["require", "exports", './GraphView', "GraphView"], function (require, ex
                     tipsy.draggable({ handle: $("#popups-GrabHandle") });
                     // For the tipsy specific listeners, change opacity.
                     // enter and leave functions used to be triggered, but with clicking it is different.
-                    tipsy.mouseenter(function () {
-                        tipsy.css("opacity", 1.0);
-                    }).mouseleave(function () {
-                        tipsy.css("opacity", 0.8);
-                    });
+                    tipsy.mouseenter(function () { tipsy.css("opacity", 1.0); }).mouseleave(function () { tipsy.css("opacity", 0.8); });
                     tipsy.mouseover(function () {
                         tipsy.css("opacity", 1.0);
                     });
@@ -114,3 +112,4 @@ define(["require", "exports", './GraphView', "GraphView"], function (require, ex
     }
     exports.nodeTooltipOnClickLambda = nodeTooltipOnClickLambda;
 });
+//# sourceMappingURL=TipsyToolTipsOnClick.js.map

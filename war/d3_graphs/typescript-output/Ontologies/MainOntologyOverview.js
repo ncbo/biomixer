@@ -21,3 +21,4 @@ define(["require", "exports", './OntologyMappingOverview', '../FetchFromApi', "O
     var graphView = new Overview.OntologyMappingOverview(centralOntologyAcronym, softNodeCap);
     graphView.initAndPopulateGraph();
 });
+//# sourceMappingURL=MainOntologyOverview.js.map

@@ -1,9 +1,8 @@
 ///<reference path="headers/require.d.ts" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "./FilterWidget", "./Utils", "./FilterWidget", "./Menu", "./GraphView", "./Concepts/ConceptPathsToRoot", "./Concepts/ConceptGraph"], function (require, exports, FilterWidget) {
     var AbstractNodeFilterWidget = (function (_super) {
@@ -19,11 +18,7 @@ define(["require", "exports", "./FilterWidget", "./Utils", "./FilterWidget", "./
             var _this = this;
             _super.prototype.addMenuComponents.call(this, menuSelector, defaultHideContainer);
             // Important to use implementation, since it might override...
-            this.addResetAndDeleteButtonsToMenuComponents(function () {
-                _this.implementation.checkmarkAllCheckboxes();
-            }, this.implementation.deleteSelectedCheckboxesLambda(function () {
-                return _this.getHiddenAssociatedNodes();
-            }));
+            this.addResetAndDeleteButtonsToMenuComponents(function () { _this.implementation.checkmarkAllCheckboxes(); }, this.implementation.deleteSelectedCheckboxesLambda(function () { return _this.getHiddenAssociatedNodes(); }));
         };
         /**
          * Get all the nodes associated with the filter, that are currently hidden.
@@ -60,10 +55,17 @@ define(["require", "exports", "./FilterWidget", "./Utils", "./FilterWidget", "./
                     // We store some arbitrary containers of nodes to hide for each checkbox. Seems data consumptive.
                     var checkboxLabel = _this.implementation.generateCheckboxLabel(target);
                     var checkboxColoredSquare = _this.implementation.generateColoredSquareIndicator(target);
-                    _this.filterContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox").mouseenter(outerThis.implementation.checkboxHoveredLambda(target)).mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target)).append($("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "").addClass(_this.getCheckboxClass()).change(function () {
+                    _this.filterContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox")
+                        .mouseenter(outerThis.implementation.checkboxHoveredLambda(target))
+                        .mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target))
+                        .append($("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "")
+                        .addClass(_this.getCheckboxClass())
+                        .change(function () {
                         var nodeHideCandidates = outerThis.implementation.computeCheckboxElementDomain(target);
                         outerThis.implementation.checkboxChanged(target, nodeHideCandidates, $(this));
-                    })).append($("<label>").attr("for", checkId).append(checkboxColoredSquare + "&nbsp;" + checkboxLabel)));
+                    }))
+                        .append($("<label>").attr("for", checkId)
+                        .append(checkboxColoredSquare + "&nbsp;" + checkboxLabel)));
                 }
                 else {
                     // Puts them into the order that the data structure uses
@@ -78,10 +80,12 @@ define(["require", "exports", "./FilterWidget", "./Utils", "./FilterWidget", "./
          * Intended to trigger each un-checked checkbox in order to undo its action and change its state to checked.
          */
         AbstractNodeFilterWidget.prototype.checkmarkAllCheckboxes = function () {
-            $("." + this.getCheckboxClass() + ":not(:checked)").trigger("click");
+            $("." + this.getCheckboxClass() + ":not(:checked)")
+                .trigger("click");
         };
         AbstractNodeFilterWidget.SOME_SELECTED_CSS = "filterCheckboxSomeSelected";
         return AbstractNodeFilterWidget;
-    })(FilterWidget.AbstractFilterWidget);
+    }(FilterWidget.AbstractFilterWidget));
     exports.AbstractNodeFilterWidget = AbstractNodeFilterWidget;
 });
+//# sourceMappingURL=NodeFilterWidget.js.map

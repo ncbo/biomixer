@@ -37,3 +37,4 @@ define(["require", "exports", './ConceptPathsToRoot', './ConceptGraph', '../Mous
     var graphView = new PathsToRoot.ConceptPathsToRoot(centralOntologyAcronym, centralConceptSimpleUri, softNodeCap);
     graphView.initAndPopulateGraph();
 });
+//# sourceMappingURL=MainConceptGraph.js.map

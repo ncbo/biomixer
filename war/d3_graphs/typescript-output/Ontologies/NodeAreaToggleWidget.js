@@ -17,13 +17,27 @@ define(["require", "exports", "../Menu", "GraphView", "Menu"], function (require
             var _this = this;
             var layoutsContainer = containers.inner;
             $(menuSelector).append(containers.outer);
-            var toggleButtonLabel = $("<label>").text("Toggle Percentile").attr("id", NodeAreaToggleWidgets.toggleButtonLabelId).css("padding-top", "2px").css("padding-bottom", "-2px").addClass("unselectable").addClass("plainBoxButton");
+            var toggleButtonLabel = $("<label>")
+                .text("Toggle Percentile")
+                .attr("id", NodeAreaToggleWidgets.toggleButtonLabelId)
+                .css("padding-top", "2px")
+                .css("padding-bottom", "-2px")
+                .addClass("unselectable")
+                .addClass("plainBoxButton");
             // Update the text once it is attached to the DOM
             var toggleFunc = function () {
                 _this.flipProportionalPercentageState(_this.graphModel, _this.graphView);
                 _this.updateLabelText();
             };
-            var toggleButton = $("<div>").attr("id", "proportionalAreaToggleButton").addClass("unselectable").addClass("boxButton").attr("title", NodeAreaToggleWidgets.toggleNodePercentileButtonText).on("click", toggleFunc).append($("<div>").addClass("unselectable")).append(toggleButtonLabel);
+            var toggleButton = $("<div>")
+                .attr("id", "proportionalAreaToggleButton")
+                .addClass("unselectable")
+                .addClass("boxButton")
+                .attr("title", NodeAreaToggleWidgets.toggleNodePercentileButtonText)
+                .on("click", toggleFunc)
+                .append($("<div>")
+                .addClass("unselectable"))
+                .append(toggleButtonLabel);
             var togglePercentileDiv = $("<div>").addClass(NodeAreaToggleWidgets.nodeUtilityContainer).addClass("clearfix");
             togglePercentileDiv.append(toggleButton);
             layoutsContainer.append(togglePercentileDiv);
@@ -34,13 +48,27 @@ define(["require", "exports", "../Menu", "GraphView", "Menu"], function (require
             var _this = this;
             var layoutsContainer = containers.inner;
             $(menuSelector).append(containers.outer);
-            var toggleButtonLabel = $("<label>").text("Toggle Sort").attr("id", NodeAreaToggleWidgets.sortToggleButtonLabelId).css("padding-top", "2px").css("padding-bottom", "-2px").addClass("unselectable").addClass("plainBoxButton");
+            var toggleButtonLabel = $("<label>")
+                .text("Toggle Sort")
+                .attr("id", NodeAreaToggleWidgets.sortToggleButtonLabelId)
+                .css("padding-top", "2px")
+                .css("padding-bottom", "-2px")
+                .addClass("unselectable")
+                .addClass("plainBoxButton");
             // Update the text once it is attached to the DOM
             var toggleFunc = function () {
                 _this.flipNodeSortState(_this.graphModel, _this.graphView);
                 _this.updateLabelText();
             };
-            var toggleButton = $("<div>").attr("id", "proportionalAreaToggleButton").addClass("unselectable").addClass("boxButton").attr("title", NodeAreaToggleWidgets.sortToggleNodePercentileButtonText).on("click", toggleFunc).append($("<div>").addClass("unselectable")).append(toggleButtonLabel);
+            var toggleButton = $("<div>")
+                .attr("id", "proportionalAreaToggleButton")
+                .addClass("unselectable")
+                .addClass("boxButton")
+                .attr("title", NodeAreaToggleWidgets.sortToggleNodePercentileButtonText)
+                .on("click", toggleFunc)
+                .append($("<div>")
+                .addClass("unselectable"))
+                .append(toggleButtonLabel);
             var togglePercentileDiv = $("<div>").addClass(NodeAreaToggleWidgets.nodeUtilityContainer).addClass("clearfix");
             togglePercentileDiv.append(toggleButton);
             layoutsContainer.append(togglePercentileDiv);
@@ -138,7 +166,10 @@ define(["require", "exports", "../Menu", "GraphView", "Menu"], function (require
                     $("#confirm-container").css("height", "auto");
                     $('.message', dialog.data[0]).append(message);
                     $("div.buttons").css("width", "auto");
-                    $("#nodeSortDialogMessage").empty().append($("<span>").text("You are about sort the nodes by the percentage of mappings to the central ontology." + "\n" + "This could take a few seconds the first time."));
+                    $("#nodeSortDialogMessage")
+                        .empty()
+                        .append($("<span>").text("You are about sort the nodes by the percentage of mappings to the central ontology." + "\n"
+                        + "This could take a few seconds the first time."));
                     // if the user clicks "yes"
                     $('.yes', dialog.data[0]).click(function () {
                         // close the dialog
@@ -169,6 +200,7 @@ define(["require", "exports", "../Menu", "GraphView", "Menu"], function (require
         NodeAreaToggleWidgets.sortNodeTogglePercentageButtonClass = "sortPercentileToggleBoxButton";
         NodeAreaToggleWidgets.sortToggleNodePercentileButtonText = "Toggle node sort order from counts to percentage and back";
         return NodeAreaToggleWidgets;
-    })();
+    }());
     exports.NodeAreaToggleWidgets = NodeAreaToggleWidgets;
 });
+//# sourceMappingURL=NodeAreaToggleWidget.js.map

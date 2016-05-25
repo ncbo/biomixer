@@ -25,11 +25,10 @@
 ///<amd-dependency path="Concepts/GraphImporterExporter" />
 ///<amd-dependency path="NodeFinderWidgets" />
 ///<amd-dependency path="Concepts/ConceptRenderScaler" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", "../Menu", "../GraphView", "../ExpansionSets", "../DeletionSet", "../TipsyToolTipsOnClick", "../CompositeExpansionDeletionSet", "./ConceptGraph", "./NestedOntologyConceptFilter", "./NestedExpansionSetConceptFilter", "./ConceptEdgeTypeFilter", "./ConceptFilterSliders", "./ConceptTour", "./ConceptLayouts", "./GraphImporterExporter", "../NodeFinderWidgets", "../MiniMap", "JQueryExtension", "Utils", "MouseSpinner", "Menu", "GraphView", "ExpansionSets", "DeletionSet", "FetchFromApi", "TipsyToolTips", "TipsyToolTipsOnClick", "UndoRedo/UndoRedoManager", "CompositeExpansionDeletionSet", "Concepts/ConceptGraph", "Concepts/ConceptFilterSliders", "Concepts/CherryPickConceptFilter", "Concepts/OntologyConceptFilter", "Concepts/NestedOntologyConceptFilter", "Concepts/ExpansionSetFilter", "Concepts/NestedExpansionSetConceptFilter", "Concepts/ConceptNodeFilterWidget", "Concepts/ConceptEdgeTypeFilter", "Concepts/ConceptFilterSliders", "Concepts/ConceptTour", "Concepts/ConceptLayouts", "Concepts/GraphImporterExporter", "NodeFinderWidgets", "Concepts/ConceptRenderScaler"], function (require, exports, Utils, MouseSpinner, Fetch, Menu, GraphView, ExpansionSets, DeletionSet, TipsyToolTipsOnClick, CompositeExpansionDeletionSet, ConceptGraph, NestedOntologyConceptFilter, NestedExpansionSetConceptFilter, ConceptEdgeTypeFilter, ConceptFilterSliders, ConceptTour, ConceptLayouts, ImporterExporter, NodeFinder, MiniMap) {
     var ConceptPathsToRoot = (function (_super) {
@@ -163,13 +162,24 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                     prevTranslate = d3.event.translate;
                 }
             });
-            this.vis = d3.select("#chart").append("svg:svg").attr("id", "graphSvg").attr("width", this.visWidth()).attr("height", this.visHeight()).attr("pointer-events", "all").on("click", function () {
+            this.vis = d3.select("#chart").append("svg:svg")
+                .attr("id", "graphSvg")
+                .attr("width", this.visWidth())
+                .attr("height", this.visHeight())
+                .attr("pointer-events", "all")
+                .on("click", function () {
                 // outerThis.menu.closeMenuLambda()()
                 TipsyToolTipsOnClick.closeOtherTipsyTooltips();
-            }).call(this.zoom).append("g").attr("id", "graph_g");
+            })
+                .call(this.zoom)
+                .append("g").attr("id", "graph_g");
             // Old, faster way of makign arc triangles. Doesn't work in IE really, and Firefox got fussy with it too.
             // this.defineCustomSVG();
-            this.vis.append("svg:rect").attr("width", this.visWidth()).attr("height", this.visHeight()).attr("id", "graphRect").style("fill", "white");
+            this.vis.append("svg:rect")
+                .attr("width", this.visWidth())
+                .attr("height", this.visHeight())
+                .attr("id", "graphRect")
+                .style("fill", "white");
             // Keeps links below nodes, and cleans up document a fair bit.
             this.vis.append("svg:g").attr("id", "link_container");
             this.vis.append("svg:g").attr("id", "node_container");
@@ -236,9 +246,7 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             return initSet;
         };
         ConceptPathsToRoot.prototype.deleteNodesForGraphInitialization = function (initSet, exceptionFromDeletion) {
-            var toDelete = this.conceptGraph.graphD3Format.nodes.filter(function (node, i) {
-                return exceptionFromDeletion !== node;
-            });
+            var toDelete = this.conceptGraph.graphD3Format.nodes.filter(function (node, i) { return exceptionFromDeletion !== node; });
             initSet.addAllDeleting(toDelete);
             // Execute the deletion by "redoing" the deletion set.
             // For other commands, this isn't necessarily possible, but when
@@ -293,11 +301,16 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             this.forceLayout.nodes(this.conceptGraph.graphD3Format.nodes);
             this.forceLayout.links(this.conceptGraph.graphD3Format.links);
             // nodeDragBehavior = forceLayout.drag;
-            this.nodeDragBehavior = d3.behavior.drag().on("dragstart", this.dragstartLambda(this)).on("drag", this.dragmoveLambda(this)).on("dragend", this.dragendLambda(this));
+            this.nodeDragBehavior = d3.behavior.drag()
+                .on("dragstart", this.dragstartLambda(this))
+                .on("drag", this.dragmoveLambda(this))
+                .on("dragend", this.dragendLambda(this));
             // See the gravityAdjust(), which is called in tick() and modulates
             // gravity to keep nodes within the view frame.
             // If charge() is adjusted, the base gravity and tweaking of it probably needs tweaking as well.
-            this.forceLayout.size([this.visWidth(), this.visHeight()]).linkDistance(this.linkMaxDesiredLength());
+            this.forceLayout
+                .size([this.visWidth(), this.visHeight()])
+                .linkDistance(this.linkMaxDesiredLength());
             // console.log("Is it force distance or link distance above?");
         };
         ConceptPathsToRoot.prototype.collide = function (node) {
@@ -395,12 +408,12 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                     d.y = Math.max(nodeHeight, Math.min(height - nodeHeight, d.y));
                     return "translate(" + d.x + "," + d.y + ")";
                 });
-                outerThis.vis.selectAll("polyline" + GraphView.BaseGraphView.linkSvgClass).filter(function (e) {
-                    return e.source === d || e.target === d;
-                }).attr("points", outerThis.updateArcLineFunc);
-                outerThis.vis.selectAll("polyline" + GraphView.BaseGraphView.linkMarkerSvgClass).filter(function (e) {
-                    return e.source === d || e.target === d;
-                }).attr("points", outerThis.updateArcMarkerFunc);
+                outerThis.vis.selectAll("polyline" + GraphView.BaseGraphView.linkSvgClass)
+                    .filter(function (e) { return e.source === d || e.target === d; })
+                    .attr("points", outerThis.updateArcLineFunc);
+                outerThis.vis.selectAll("polyline" + GraphView.BaseGraphView.linkMarkerSvgClass)
+                    .filter(function (e) { return e.source === d || e.target === d; })
+                    .attr("points", outerThis.updateArcMarkerFunc);
                 outerThis.stampTimeLayoutModified();
                 // Better to have nice movement than to have the minimap reflect the changes of dragging.
                 // outerThis.renderMiniMap();
@@ -442,7 +455,10 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             triPointY1 += midPointY;
             triPointX2 += midPointX;
             triPointY2 += midPointY;
-            var points = +midPointX + "," + midPointY + " " + triPointX1 + "," + triPointY1 + " " + triPointX2 + "," + triPointY2 + " " + midPointX + "," + midPointY + " ";
+            var points = +midPointX + "," + midPointY + " "
+                + triPointX1 + "," + triPointY1 + " "
+                + triPointX2 + "," + triPointY2 + " "
+                + midPointX + "," + midPointY + " ";
             return points;
         };
         ConceptPathsToRoot.prototype.computeArcMarkerForComposition = function (linkData, ignoreOffset) {
@@ -483,7 +499,11 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             triPointY1 += midPointY1;
             triPointX2 += midPointX2;
             triPointY2 += midPointY2;
-            var points = +midPointX1 + "," + midPointY1 + " " + triPointX1 + "," + triPointY1 + " " + midPointX2 + "," + midPointY2 + " " + triPointX2 + "," + triPointY2 + " " + midPointX1 + "," + midPointY1 + " ";
+            var points = +midPointX1 + "," + midPointY1 + " "
+                + triPointX1 + "," + triPointY1 + " "
+                + midPointX2 + "," + midPointY2 + " "
+                + triPointX2 + "," + triPointY2 + " "
+                + midPointX1 + "," + midPointY1 + " ";
             return points;
         };
         ConceptPathsToRoot.prototype.computeArcMarkerForMapping = function (linkData, ignoreOffset) {
@@ -519,14 +539,19 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             tBody.append($("<tr></tr>").append($("<td></td>").append($("<div></div>").text(conceptData["name"]).attr("class", "popups-Header"))).append($("<td></td>").append($("<div>").attr("id", "popups-GrabHandle"))));
             {
                 var outerThis = this;
-                var checkboxInput = $("<input type='checkbox' " + (this.isNodeHidden(conceptData) ? "checked=checked" : "") + ">").attr("id", "popupCheckId");
+                var checkboxInput = $("<input type='checkbox' " + (this.isNodeHidden(conceptData) ? "checked=checked" : "") + ">")
+                    .attr("id", "popupCheckId");
                 // Since this is turned into html, any JQuery event bindings will get lost. We have to do the binding later,
                 // and we need to prevent re-binding by calling off() first, as seen here.
                 $(document.body).off().on("change", "#popupCheckId", function () {
                     outerThis.toggleHideNodeLambda(outerThis)(conceptData, 0);
                     outerThis.refreshOtherFilterCheckboxStates([conceptData], null);
                 });
-                var checkboxUnit = $("<span>").addClass("popupNodeHideCheckbox").append(checkboxInput).append($("<label>").attr("for", "popupCheckId").append("Dim Node"));
+                var checkboxUnit = $("<span>")
+                    .addClass("popupNodeHideCheckbox")
+                    .append(checkboxInput)
+                    .append($("<label>").attr("for", "popupCheckId")
+                    .append("Dim Node"));
                 tBody.append($("<tr></tr>").append($("<td></td>").append(checkboxUnit)));
             }
             var urlText = "http://bioportal.bioontology.org/ontologies/" + conceptData["ontologyAcronym"] + "?p=classes&conceptid=" + conceptData["simpleConceptUri"];
@@ -566,9 +591,7 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 // Concept graphs have fixed node and arc sizes.
                 // link.attr("data-thickness_basis", function(d) { return d.value;})
                 // link.select("title").text(outerThis.conceptLinkLabelFunction);
-                link.select("title").text(function (d) {
-                    return d.value;
-                });
+                link.select("title").text(function (d) { return d.value; });
             };
             var updateNodesFromJson = function (i, d) {
                 // Given a json encoded graph element, update all of the nested elements associated with it
@@ -579,11 +602,11 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 // nodeRects.attr("data-radius_basis", d.number);
                 nodeRects.transition().style("fill", d.nodeColor);
                 node.select("title").text(outerThis.conceptNodeSimplePopupFunction);
-                node.select("text").text(outerThis.conceptNodeLabelFunction).attr("x", function () {
-                    return -this.getComputedTextLength() / 2;
-                });
+                node.select("text").text(outerThis.conceptNodeLabelFunction)
+                    .attr("x", function () { return -this.getComputedTextLength() / 2; });
                 // Refresh popup if currently open
-                if (outerThis.lastDisplayedTipsy != null && outerThis.lastDisplayedTipsy.css("visibility") == "visible") {
+                if (outerThis.lastDisplayedTipsy != null
+                    && outerThis.lastDisplayedTipsy.css("visibility") == "visible") {
                     console.log("This wont' work anymore");
                 }
             };
@@ -610,37 +633,50 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             var outerThis = this;
             // Data constancy via key function() passed to data()
             // Link stuff first
-            var links = this.vis.select("#link_container").selectAll("polyline" + GraphView.BaseGraphView.linkSvgClass).data(linksData, ConceptGraph.Link.d3IdentityFunc);
+            var links = this.vis.select("#link_container")
+                .selectAll("polyline" + GraphView.BaseGraphView.linkSvgClass).data(linksData, ConceptGraph.Link.d3IdentityFunc);
             // Add new stuff
             // Make svg:g like nodes if we need labels
             // Would skip the g element here for links, but it cleans up the document and bundles text with line.
-            var enteringLinks = links.enter().append("svg:g").attr("class", function (d) {
-                return GraphView.BaseGraphView.linkSvgClassSansDot + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + d.relationType + " " + outerThis.getLinkCssClass(d.relationType, d.relationSpecificToOntologyAcronym);
-            }).attr("id", function (d) {
-                return "link_g_" + d.id;
-            });
+            var enteringLinks = links.enter().append("svg:g")
+                .attr("class", function (d) {
+                return GraphView.BaseGraphView.linkSvgClassSansDot
+                    + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + d.relationType
+                    + " " + outerThis.getLinkCssClass(d.relationType, d.relationSpecificToOntologyAcronym);
+            })
+                .attr("id", function (d) { return "link_g_" + d.id; });
             // Need a sub container to allow for both transparency and layout animations
-            var enteringSubG = enteringLinks.append("svg:g").attr("id", function (d) {
-                return "link_sub_g_" + d.id;
-            }).attr("class", GraphView.BaseGraphView.linkSubGSvgClassSansDot).style("opacity", 0.0);
-            var enteringPolylines = enteringSubG.append("svg:polyline").attr("class", function (d) {
-                return GraphView.BaseGraphView.linkSvgClassSansDot + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + d.relationType + " " + outerThis.getLinkCssClass(d.relationType, d.relationSpecificToOntologyAcronym);
-            }).attr("id", function (d) {
-                return "link_line_" + d.id;
-            }).on("mouseover", this.highlightHoveredLinkLambda(this)).on("mouseout", this.unhighlightHoveredLinkLambda(this)).attr("data-thickness_basis", function (d) {
-                return d.value;
-            });
-            var enteringArcMarkers = enteringSubG.append("svg:polyline").attr("class", function (d) {
-                return GraphView.BaseGraphView.linkMarkerSvgClassSansDot + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + d.relationType + " " + outerThis.getLinkCssClass(d.relationType, d.relationSpecificToOntologyAcronym);
-            }).attr("id", function (d) {
-                return "link_marker_" + d.id;
-            }).on("mouseover", this.highlightHoveredLinkLambda(this)).on("mouseout", this.unhighlightHoveredLinkLambda(this));
+            var enteringSubG = enteringLinks.append("svg:g")
+                .attr("id", function (d) { return "link_sub_g_" + d.id; })
+                .attr("class", GraphView.BaseGraphView.linkSubGSvgClassSansDot)
+                .style("opacity", 0.0);
+            var enteringPolylines = enteringSubG.append("svg:polyline")
+                .attr("class", function (d) {
+                return GraphView.BaseGraphView.linkSvgClassSansDot
+                    + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + d.relationType
+                    + " " + outerThis.getLinkCssClass(d.relationType, d.relationSpecificToOntologyAcronym);
+            })
+                .attr("id", function (d) { return "link_line_" + d.id; })
+                .on("mouseover", this.highlightHoveredLinkLambda(this))
+                .on("mouseout", this.unhighlightHoveredLinkLambda(this))
+                .attr("data-thickness_basis", function (d) { return d.value; });
+            var enteringArcMarkers = enteringSubG.append("svg:polyline")
+                .attr("class", function (d) {
+                return GraphView.BaseGraphView.linkMarkerSvgClassSansDot
+                    + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + d.relationType
+                    + " " + outerThis.getLinkCssClass(d.relationType, d.relationSpecificToOntologyAcronym);
+            })
+                .attr("id", function (d) { return "link_marker_" + d.id; })
+                .on("mouseover", this.highlightHoveredLinkLambda(this))
+                .on("mouseout", this.unhighlightHoveredLinkLambda(this));
             // Update Tool tip
-            enteringLinks.append("title").text(this.conceptLinkSimplePopupFunction).attr("id", function (d) {
-                return "link_title_" + d.id;
-            });
+            enteringLinks // this is new...used to do to all linked data...
+                .append("title") // How would I *update* this if I needed to?
+                .text(this.conceptLinkSimplePopupFunction)
+                .attr("id", function (d) { return "link_title_" + d.id; });
             // Make the arc opaque over time, just like the nodes.
-            enteringSubG.transition().duration(this.enteringElementTransitionDuration).style("opacity", "1.0").each("end", function (d, i) {
+            enteringSubG.transition().duration(this.enteringElementTransitionDuration).style("opacity", "1.0")
+                .each("end", function (d, i) {
                 if (temporaryEdges) {
                     return;
                 }
@@ -746,6 +782,7 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             var arcCssClassArray = ["inheritanceStyleLink", "compositionStyleLink", "mappingStyleLink"];
             var arcCssLabelArray = ["is a", "has a", "maps to"];
             for (var i = 0; i < arcCssClassArray.length; i++) {
+                // Do the arrow markers first
                 {
                     var cssClass = arcCssClassArray[i];
                     var marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
@@ -788,29 +825,37 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 return [];
             }
             var outerThis = this;
-            var nodes = this.vis.select("#node_container").selectAll("g.node_g").data(nodesData, ConceptGraph.Node.d3IdentityFunc);
+            var nodes = this.vis.select("#node_container")
+                .selectAll("g.node_g").data(nodesData, ConceptGraph.Node.d3IdentityFunc);
             // Add new stuff
-            var enteringNodes = nodes.enter().append("svg:g").attr("class", GraphView.BaseGraphView.nodeGSvgClassSansDot).attr("id", function (d) {
-                return "node_g_" + d.conceptUriForIds;
-            }).call(this.nodeDragBehavior).on("mouseover", this.highlightHoveredNodeLambda(this, true)).on("mouseout", this.unhighlightHoveredNodeLambda(this, true));
+            var enteringNodes = nodes.enter()
+                .append("svg:g")
+                .attr("class", GraphView.BaseGraphView.nodeGSvgClassSansDot)
+                .attr("id", function (d) { return "node_g_" + d.conceptUriForIds; })
+                .call(this.nodeDragBehavior)
+                .on("mouseover", this.highlightHoveredNodeLambda(this, true))
+                .on("mouseout", this.unhighlightHoveredNodeLambda(this, true));
             // The subG container is needed so that we can have spatial layout transitions occurring
             // on the upper g container (thus all the children), while also having fade in and fade out
             // transitions on the child elements.
-            var enteringSubG = enteringNodes.append("svg:g").attr("id", function (d) {
-                return "node_sub_g_" + d.conceptUriForIds;
-            }).attr("class", GraphView.BaseGraphView.nodeSubGSvgClassSansDot).style("opacity", 0.0);
+            var enteringSubG = enteringNodes.append("svg:g")
+                .attr("id", function (d) { return "node_sub_g_" + d.conceptUriForIds; })
+                .attr("class", GraphView.BaseGraphView.nodeSubGSvgClassSansDot)
+                .style("opacity", 0.0);
             // Basic properties
-            enteringSubG.append("svg:rect").attr("id", function (d) {
-                return "node_rect_" + d.conceptUriForIds;
-            }).attr("class", function (d) {
+            enteringSubG
+                .append("svg:rect")
+                .attr("id", function (d) { return "node_rect_" + d.conceptUriForIds; })
+                .attr("class", function (d) {
                 var classes = GraphView.BaseGraphView.nodeSvgClassSansDot + " " + GraphView.BaseGraphView.conceptNodeSvgClassSansDot;
                 if (d.simpleConceptUri === outerThis.centralConceptSimpleUri) {
                     classes += " centralNode";
                 }
                 return classes;
-            }).style("fill", function (d) {
-                return d.nodeColor;
-            }).attr("height", this.nodeHeight).attr("width", this.nodeHeight);
+            })
+                .style("fill", function (d) { return d.nodeColor; })
+                .attr("height", this.nodeHeight)
+                .attr("width", this.nodeHeight);
             // tipsy stickiness from:
             // http://stackoverflow.com/questions/4720804/can-i-make-this-jquery-tooltip-stay-on-when-my-cursor-is-over-it
             enteringSubG.each(TipsyToolTipsOnClick.nodeTooltipOnClickLambda(this));
@@ -819,11 +864,15 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             //   .attr("id", function(d){ return "node_title_"+d.acronym})
             //   .text(function(d) { return "Number Of Terms: "+d.number; });
             // Label
-            enteringSubG.append("svg:text").attr("id", function (d) {
-                return "node_text_" + d.conceptUriForIds;
-            }).attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable").text(function (d) {
-                return d.name;
-            }).style("pointer-events", "none").attr("unselectable", "on").attr("onmousedown", "noselect").attr("onselectstart", "function(){ return false;}");
+            enteringSubG.append("svg:text")
+                .attr("id", function (d) { return "node_text_" + d.conceptUriForIds; })
+                .attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable")
+                .text(function (d) { return d.name; })
+                .style("pointer-events", "none")
+                .attr("unselectable", "on") // IE 8
+                .attr("onmousedown", "noselect") // IE ?
+                .attr("onselectstart", "function(){ return false;}") // IE 8?
+            ;
             // Resize each node to encompass the label we just created.
             $(GraphView.BaseGraphView.nodeLabelSvgClass).each(function (i, d) {
                 var textSize = this.getBBox(); // d.getBBox();
@@ -843,16 +892,17 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             // TODO I made a different method for removing nodes that we see below. This is bad now, yes?
             // nodes.exit().remove();
             // Animate the new nodes into view.
-            enteringSubG.transition().duration(this.enteringElementTransitionDuration).style("opacity", 1.0).each("end", function (d, i) {
+            enteringSubG // initialize as transparent, and animate to opaque
+                .transition().duration(this.enteringElementTransitionDuration)
+                .style("opacity", 1.0)
+                .each("end", function (d, i) {
                 outerThis.renderMiniMap(false, true, true);
                 return;
             });
             if (!enteringNodes.empty()) {
                 this.runCurrentLayout(true);
                 this.updateStartWithoutResume();
-                enteringNodes.attr("transform", function (d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
+                enteringNodes.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
                 this.edgeTypeFilter.updateFilterUI();
                 // this.individualConceptFilter.updateFilterUI();
                 // this.ontologyFilter.updateFilterUI();
@@ -882,10 +932,9 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             var exitingNodes = nodes.exit();
             var exitingLinks = links.exit();
             var linksRemoved = exitingLinks.transition().duration(this.exitingElementTransitionDuration).style("opacity", 0.0);
-            var nodesRemoved = exitingNodes.transition().duration(this.exitingElementTransitionDuration).style("opacity", 0.0).call(function () {
-                exitingLinks.remove();
-                exitingNodes.remove();
-            }).each("end", function (d, i) {
+            var nodesRemoved = exitingNodes.transition().duration(this.exitingElementTransitionDuration).style("opacity", 0.0)
+                .call(function () { exitingLinks.remove(); exitingNodes.remove(); })
+                .each("end", function (d, i) {
                 if (temporaryOnly) {
                     return;
                 }
@@ -913,19 +962,26 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
         };
         ConceptPathsToRoot.prototype.attachNodeMenu = function (enteringNodes) {
             // Menu indicator:
-            var expanderSvgs = enteringNodes.append("svg:svg").attr("overflow", "visible").attr("x", function (d) {
-                return -1 * parseInt($("#node_rect_" + d.conceptUriForIds)[0].getAttribute("height"), 0) / 2;
-            }).attr("y", function (d) {
-                return parseInt($("#node_rect_" + d.conceptUriForIds)[0].getAttribute("height"), 0) / 2;
-            }).on("click", this.showNodeExpanderPopupMenuLambda(this));
-            expanderSvgs.append("svg:rect").attr("id", function (d) {
-                return ConceptPathsToRoot.NODE_EXPANDER_INDICATOR_ID_PREFIX + d.conceptUriForIds;
-            }).style("fill", "#c5effd").style("stroke", "#afc6e5").attr("height", this.expansionBoxHeight).attr("width", this.expansionBoxWidth).attr("overflow", "visible");
-            expanderSvgs.append("svg:polygon").attr("points", "11.25,2 18.75,2 15,6 ").style("fill", "#000000").attr("x", function (d) {
-                return -1 * (this.getAttribute("width") / 2);
-            }).attr("y", function (d) {
-                return parseInt($("#node_rect_" + d.conceptUriForIds)[0].getAttribute("height"), 0) / 2;
-            }).attr("overflow", "visible");
+            var expanderSvgs = enteringNodes
+                .append("svg:svg").attr("overflow", "visible")
+                .attr("x", function (d) { return -1 * parseInt($("#node_rect_" + d.conceptUriForIds)[0].getAttribute("height"), 0) / 2; })
+                .attr("y", function (d) { return parseInt($("#node_rect_" + d.conceptUriForIds)[0].getAttribute("height"), 0) / 2; })
+                .on("click", this.showNodeExpanderPopupMenuLambda(this));
+            expanderSvgs
+                .append("svg:rect")
+                .attr("id", function (d) { return ConceptPathsToRoot.NODE_EXPANDER_INDICATOR_ID_PREFIX + d.conceptUriForIds; })
+                .style("fill", "#c5effd")
+                .style("stroke", "#afc6e5")
+                .attr("height", this.expansionBoxHeight)
+                .attr("width", this.expansionBoxWidth)
+                .attr("overflow", "visible");
+            expanderSvgs
+                .append("svg:polygon")
+                .attr("points", "11.25,2 18.75,2 15,6 ")
+                .style("fill", "#000000")
+                .attr("x", function (d) { return -1 * (this.getAttribute("width") / 2); })
+                .attr("y", function (d) { return parseInt($("#node_rect_" + d.conceptUriForIds)[0].getAttribute("height"), 0) / 2; })
+                .attr("overflow", "visible");
         };
         ConceptPathsToRoot.prototype.showNodeExpanderPopupMenuLambda = function (outerThis) {
             return function (nodeData) {
@@ -934,12 +990,13 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 // If the namespace is not specified for svg elements, they do not render, though they do get added to the DOM.
                 // To do so, you need to do verbose things like: document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 // So, I don't get to use JQuery as much as D3 it turns out.
-                var innerSvg = d3.select(this).append("svg:svg").attr("id", "expanderMenu").attr("overflow", "visible").attr("y", 0).attr("x", -1 * (config.rectWidth / 2 + parseInt(d3.select(this).attr("x"), 0))).attr("width", config.rectWidth).attr("height", config.rectHeight * 2).style("z-index", 100).on("mouseleave", function () {
-                    outerThis.unhighlightHoveredNodeLambda(outerThis, false)(nodeData, 0);
-                    $("#expanderMenu").first().remove();
-                }).on("click", function () {
-                    $("#expanderMenu").first().remove();
-                });
+                var innerSvg = d3.select(this).append("svg:svg")
+                    .attr("id", "expanderMenu")
+                    .attr("overflow", "visible").attr("y", 0).attr("x", -1 * (config.rectWidth / 2 + parseInt(d3.select(this).attr("x"), 0)))
+                    .attr("width", config.rectWidth).attr("height", config.rectHeight * 2)
+                    .style("z-index", 100)
+                    .on("mouseleave", function () { outerThis.unhighlightHoveredNodeLambda(outerThis, false)(nodeData, 0); $("#expanderMenu").first().remove(); })
+                    .on("click", function () { $("#expanderMenu").first().remove(); });
                 // We also add hover effects to text children lower down
                 // Create concept expander button
                 outerThis.appendConceptExpandingButton(innerSvg, config, nodeData, this);
@@ -954,11 +1011,9 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 // Obviously if we change the overall design of the menu this won't work as is.
                 outerThis.resizeMenuWidths(innerSvg, config);
                 // Make the menu labels bold when hovered over
-                d3.selectAll(".expanderMenuItem").on("mouseover", function (node) {
-                    d3.select(this).classed("boldText", true);
-                }).on("mouseout", function (node) {
-                    d3.select(this).classed("boldText", false);
-                });
+                d3.selectAll(".expanderMenuItem")
+                    .on("mouseover", function (node) { d3.select(this).classed("boldText", true); })
+                    .on("mouseout", function (node) { d3.select(this).classed("boldText", false); });
             };
         };
         ConceptPathsToRoot.prototype.resizeMenuWidths = function (innerSvg, config) {
@@ -990,12 +1045,13 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             // If the namespace is not specified for svg elements, they do not render, though they do get added to the DOM.
             // To do so, you need to do verbose things like: document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             // So, I don't get to use JQuery as much as D3 it turns out.
-            var innerSvg = d3.select(target).append("svg:svg").attr("id", "expanderSubMenu").attr("overflow", "visible").attr("y", 0).attr("x", -1 * (config.rectWidth / 2 + parseInt(d3.select(target).attr("x"), 0))).attr("width", config.rectWidth).attr("height", config.rectHeight * 2).style("z-index", 100).on("mouseleave", function () {
-                _this.unhighlightHoveredNodeLambda(_this, false)(nodeData, 0);
-                $("#expanderSubMenu").first().remove();
-            }).on("mouseup", function () {
-                $("#expanderSubMenu").first().remove();
-            });
+            var innerSvg = d3.select(target).append("svg:svg")
+                .attr("id", "expanderSubMenu")
+                .attr("overflow", "visible").attr("y", 0).attr("x", -1 * (config.rectWidth / 2 + parseInt(d3.select(target).attr("x"), 0)))
+                .attr("width", config.rectWidth).attr("height", config.rectHeight * 2)
+                .style("z-index", 100)
+                .on("mouseleave", function () { _this.unhighlightHoveredNodeLambda(_this, false)(nodeData, 0); $("#expanderSubMenu").first().remove(); })
+                .on("mouseup", function () { $("#expanderSubMenu").first().remove(); });
             this.appendConceptExpandChildrenButton(innerSvg, config, nodeData);
             this.appendConceptExpandParentsButton(innerSvg, config, nodeData);
             this.appendConceptExpandOthersButton(innerSvg, config, nodeData);
@@ -1004,7 +1060,9 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
         ConceptPathsToRoot.prototype.appendConceptExpandingButton = function (innerSvg, config, nodeData, target) {
             var _this = this;
             var outerThis = this;
-            var conceptExpandSvg = innerSvg.append("svg:svg").attr("overflow", "visible").attr("y", 0).classed("expanderMenuItem", true);
+            var conceptExpandSvg = innerSvg.append("svg:svg")
+                .attr("overflow", "visible").attr("y", 0)
+                .classed("expanderMenuItem", true);
             // If this node is currently cleared for expansion within the undo/stack current context,
             // then it means we already did this expansion (possibly via another means).
             // Let's alter the menu to reflect this.
@@ -1026,24 +1084,60 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             else {
                 conceptExpandTextValue = "Concepts Already Expanded";
                 conceptExpandFontFillColor = "#AAAAAA"; // grey out font when we can't use the item
-                conceptExpandMouseUpFunc = function () {
-                    return false;
-                };
+                conceptExpandMouseUpFunc = function () { return false; };
             }
-            var conceptRect = conceptExpandSvg.append("svg:rect").style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight).on("mouseup", conceptExpandMouseUpFunc);
-            conceptExpandSvg.append("svg:text").text(conceptExpandTextValue).style("fill", conceptExpandFontFillColor).attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding).attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText").classed("svgFont", true).style("pointer-events", "none").attr("unselectable", "on").attr("onmousedown", "noselect").attr("onselectstart", "function(){ return false;}");
-            var submenuSvg = conceptExpandSvg.append("svg:svg").attr("width", "100%").attr("height", "100%").attr("preserveAspectRatio", "xMaxYMin meet") // maybe meet too as value after space
+            var conceptRect = conceptExpandSvg.append("svg:rect")
+                .style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight)
+                .on("mouseup", conceptExpandMouseUpFunc);
+            conceptExpandSvg.append("svg:text")
+                .text(conceptExpandTextValue)
+                .style("fill", conceptExpandFontFillColor)
+                .attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding)
+                .attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText")
+                .classed("svgFont", true)
+                .style("pointer-events", "none")
+                .attr("unselectable", "on") // IE 8
+                .attr("onmousedown", "noselect") // IE ?
+                .attr("onselectstart", "function(){ return false;}") // IE 8?
             ;
-            var submenuG = submenuSvg.append("svg:g").attr("x", config.rectWidth).attr("y", config.rectHeight - config.subMenuSize * 2).attr("height", config.subMenuSize * 2).attr("width", config.subMenuSize * 2).attr("overflow", "visible");
-            var submenuRect = submenuG.append("svg:circle").style("fill", "blue").attr("cx", config.subMenuSize + 1).attr("cy", config.subMenuSize + 1).style("stroke", "#afc6e5").attr("r", config.subMenuSize).attr("overflow", "visible").on("mousedown", function () {
-                d3.event.stopPropagation();
-            }).on("mouseup", function () {
+            var submenuSvg = conceptExpandSvg.append("svg:svg")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("preserveAspectRatio", "xMaxYMin meet");
+            var submenuG = submenuSvg
+                .append("svg:g")
+                .attr("x", config.rectWidth)
+                .attr("y", config.rectHeight - config.subMenuSize * 2)
+                .attr("height", config.subMenuSize * 2)
+                .attr("width", config.subMenuSize * 2)
+                .attr("overflow", "visible");
+            var submenuRect = submenuG
+                .append("svg:circle")
+                .style("fill", "blue")
+                .attr("cx", config.subMenuSize + 1)
+                .attr("cy", config.subMenuSize + 1)
+                .style("stroke", "#afc6e5")
+                .attr("r", config.subMenuSize)
+                .attr("overflow", "visible")
+                .on("mousedown", function () { d3.event.stopPropagation(); })
+                .on("mouseup", function () {
                 d3.event.stopPropagation();
                 $("#expanderMenu").remove();
                 _this.toggleToExpansionSubMenu(nodeData, target);
             });
-            submenuRect.append("title").attr("text", "Click here for different expansion options");
-            submenuG.append("svg:text").text("+").style("fill", conceptExpandFontFillColor).attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText").classed("svgFont", true).style("pointer-events", "none").attr("unselectable", "on").attr("onmousedown", "noselect").attr("onselectstart", "function(){ return false;}");
+            submenuRect
+                .append("title").attr("text", "Click here for different expansion options");
+            submenuG
+                .append("svg:text")
+                .text("+")
+                .style("fill", conceptExpandFontFillColor)
+                .attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText")
+                .classed("svgFont", true)
+                .style("pointer-events", "none")
+                .attr("unselectable", "on") // IE 8
+                .attr("onmousedown", "noselect") // IE ?
+                .attr("onselectstart", "function(){ return false;}") // IE 8?
+            ;
             //        submenuRect
             //        .append("svg:polygon")
             //        .attr("points", "11.25,2 18.75,2 15,6 ")
@@ -1055,7 +1149,9 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
         };
         ConceptPathsToRoot.prototype.appendMappingExpanderButton = function (innerSvg, config, nodeData) {
             var outerThis = this;
-            var mappingExpandSvg = innerSvg.append("svg:svg").attr("overflow", "visible").attr("y", config.rectHeight).classed("expanderMenuItem", true);
+            var mappingExpandSvg = innerSvg.append("svg:svg")
+                .attr("overflow", "visible").attr("y", config.rectHeight)
+                .classed("expanderMenuItem", true);
             // If this node is currently cleared for expansion within the undo/stack current context,
             // then it means we already did this expansion (possibly via another means).
             // Let's alter the menu to reflect this.
@@ -1077,31 +1173,61 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             else {
                 mappingExpandTextValue = "Mappings Already Expanded";
                 mappingExpandFontFillColor = "#AAAAAA"; // grey out font when we can't use the item
-                mappingExpandMouseUpFunc = function () {
-                    return false;
-                };
+                mappingExpandMouseUpFunc = function () { return false; };
             }
-            mappingExpandSvg.append("svg:rect").style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight).on("mouseup", mappingExpandMouseUpFunc);
-            mappingExpandSvg.append("svg:text").text(mappingExpandTextValue).style("fill", mappingExpandFontFillColor).attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding).attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText").classed("svgFont", true).style("pointer-events", "none").attr("unselectable", "on").attr("onmousedown", "noselect").attr("onselectstart", "function(){ return false;}");
+            mappingExpandSvg.append("svg:rect")
+                .style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight)
+                .on("mouseup", mappingExpandMouseUpFunc);
+            mappingExpandSvg.append("svg:text")
+                .text(mappingExpandTextValue)
+                .style("fill", mappingExpandFontFillColor)
+                .attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding)
+                .attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText")
+                .classed("svgFont", true)
+                .style("pointer-events", "none")
+                .attr("unselectable", "on") // IE 8
+                .attr("onmousedown", "noselect") // IE ?
+                .attr("onselectstart", "function(){ return false;}") // IE 8?
+            ;
         };
         ConceptPathsToRoot.prototype.appendRefocusNodeButton = function (innerSvg, config, nodeData) {
             var outerThis = this;
-            var centralizeNodeSvg = innerSvg.append("svg:svg").attr("overflow", "visible").attr("y", 2 * config.rectHeight).classed("expanderMenuItem", true);
-            centralizeNodeSvg.append("svg:rect").style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight).on("mouseup", function () {
-                $("#expanderMenu").first().remove();
-                outerThis.recomputeVisualizationOntoNode(nodeData);
-            });
-            centralizeNodeSvg.append("svg:text").text(ConceptPathsToRoot.REFOCUS_NODE_TEXT).attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding).style("font-weight", "inherit").attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText").classed("svgFont", true).style("pointer-events", "none").attr("unselectable", "on").attr("onmousedown", "noselect").attr("onselectstart", "function(){ return false;}");
+            var centralizeNodeSvg = innerSvg.append("svg:svg")
+                .attr("overflow", "visible").attr("y", 2 * config.rectHeight)
+                .classed("expanderMenuItem", true);
+            centralizeNodeSvg.append("svg:rect")
+                .style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight)
+                .on("mouseup", function () { $("#expanderMenu").first().remove(); outerThis.recomputeVisualizationOntoNode(nodeData); });
+            centralizeNodeSvg.append("svg:text")
+                .text(ConceptPathsToRoot.REFOCUS_NODE_TEXT)
+                .attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding)
+                .style("font-weight", "inherit")
+                .attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText")
+                .classed("svgFont", true)
+                .style("pointer-events", "none")
+                .attr("unselectable", "on") // IE 8
+                .attr("onmousedown", "noselect") // IE ?
+                .attr("onselectstart", "function(){ return false;}") // IE 8?
+            ;
         };
         ConceptPathsToRoot.prototype.appendNodeHideMenuItem = function (innerSvg, config, nodeData) {
             var outerThis = this;
-            var hideNodeSvg = innerSvg.append("svg:svg").attr("overflow", "visible").attr("y", 3 * config.rectHeight).classed("expanderMenuItem", true);
-            hideNodeSvg.append("svg:rect").style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight).on("mouseup", function () {
-                $("#expanderMenu").first().remove();
-                outerThis.toggleHideNodeLambda(outerThis)(nodeData, 0);
-                outerThis.refreshOtherFilterCheckboxStates([nodeData], null);
-            });
-            hideNodeSvg.append("svg:text").text(this.isNodeHidden(nodeData) ? "Un-dim Node" : "Dim Node").attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding).attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText").classed("svgFont", true).style("pointer-events", "none").attr("unselectable", "on").attr("onmousedown", "noselect").attr("onselectstart", "function(){ return false;}");
+            var hideNodeSvg = innerSvg.append("svg:svg")
+                .attr("overflow", "visible").attr("y", 3 * config.rectHeight)
+                .classed("expanderMenuItem", true);
+            hideNodeSvg.append("svg:rect")
+                .style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight)
+                .on("mouseup", function () { $("#expanderMenu").first().remove(); outerThis.toggleHideNodeLambda(outerThis)(nodeData, 0); outerThis.refreshOtherFilterCheckboxStates([nodeData], null); });
+            hideNodeSvg.append("svg:text")
+                .text(this.isNodeHidden(nodeData) ? "Un-dim Node" : "Dim Node")
+                .attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding)
+                .attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText")
+                .classed("svgFont", true)
+                .style("pointer-events", "none")
+                .attr("unselectable", "on") // IE 8
+                .attr("onmousedown", "noselect") // IE ?
+                .attr("onselectstart", "function(){ return false;}") // IE 8?
+            ;
         };
         ConceptPathsToRoot.prototype.appendConceptExpandChildrenButton = function (innerSvg, config, nodeData) {
             var outerThis = this;
@@ -1137,7 +1263,9 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             this.appendConceptSubButton("Relations", callback, hardTermExpansionCount, innerSvg, config, nodeData);
         };
         ConceptPathsToRoot.prototype.appendConceptSubButton = function (name, callback, hardTermExpansionCount, innerSvg, config, nodeData) {
-            var conceptExpandSvg = innerSvg.append("svg:svg").attr("overflow", "visible").attr("y", $(".expanderMenuItem").length * config.rectHeight).classed("expanderMenuItem", true);
+            var conceptExpandSvg = innerSvg.append("svg:svg")
+                .attr("overflow", "visible").attr("y", $(".expanderMenuItem").length * config.rectHeight)
+                .classed("expanderMenuItem", true);
             // If this node is currently cleared for expansion within the undo/stack current context,
             // then it means we already did this expansion (possibly via another means).
             // Let's alter the menu to reflect this.
@@ -1153,12 +1281,22 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             else {
                 conceptExpandTextValue = name + " Already Expanded";
                 conceptExpandFontFillColor = "#AAAAAA"; // grey out font when we can't use the item
-                conceptExpandMouseUpFunc = function () {
-                    return false;
-                };
+                conceptExpandMouseUpFunc = function () { return false; };
             }
-            var conceptRect = conceptExpandSvg.append("svg:rect").style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight).on("mouseup", conceptExpandMouseUpFunc);
-            conceptExpandSvg.append("svg:text").text(conceptExpandTextValue).style("fill", conceptExpandFontFillColor).attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding).attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText").classed("svgFont", true).style("pointer-events", "none").attr("unselectable", "on").attr("onmousedown", "noselect").attr("onselectstart", "function(){ return false;}");
+            var conceptRect = conceptExpandSvg.append("svg:rect")
+                .style("fill", "#FFFFFF").style("stroke", "#000000").attr("x", 0).attr("y", 0).attr("width", config.rectWidth).attr("height", config.rectHeight)
+                .on("mouseup", conceptExpandMouseUpFunc);
+            conceptExpandSvg.append("svg:text")
+                .text(conceptExpandTextValue)
+                .style("fill", conceptExpandFontFillColor)
+                .attr("x", config.fontXSvgPadding).attr("y", config.fontYSvgPadding)
+                .attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable " + " expanderMenuText")
+                .classed("svgFont", true)
+                .style("pointer-events", "none")
+                .attr("unselectable", "on") // IE 8
+                .attr("onmousedown", "noselect") // IE ?
+                .attr("onselectstart", "function(){ return false;}") // IE 8?
+            ;
         };
         ConceptPathsToRoot.prototype.beforeNodeHighlight = function (targetNodeData) {
             this.conceptGraph.manifestTemporaryHoverEdges(targetNodeData);
@@ -1320,9 +1458,10 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             rectHeight: 35,
             fontXSvgPadding: 7,
             fontYSvgPadding: 23,
-            subMenuSize: 4,
+            subMenuSize: 4
         };
         return ConceptPathsToRoot;
-    })(GraphView.BaseGraphView);
+    }(GraphView.BaseGraphView));
     exports.ConceptPathsToRoot = ConceptPathsToRoot;
 });
+//# sourceMappingURL=ConceptPathsToRoot.js.map

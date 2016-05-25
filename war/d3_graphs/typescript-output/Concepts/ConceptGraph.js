@@ -9,11 +9,10 @@
 ///<amd-dependency path="TipsyToolTipsOnClick" />
 ///<amd-dependency path="CompositeExpansionDeletionSet" />
 ///<amd-dependency path="Concepts/PropertyRelationsExpander" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "../ExpansionSets", "./ExpansionManager", "../TipsyToolTipsOnClick", "./PropertyRelationsExpander", "Utils", "MouseSpinner", "FetchFromApi", "GraphView", "LayoutProvider", "ExpansionSets", "Concepts/ExpansionManager", "UndoRedo/UndoRedoManager", "TipsyToolTipsOnClick", "CompositeExpansionDeletionSet", "Concepts/PropertyRelationsExpander"], function (require, exports, Utils, Fetcher, GraphView, ExpansionSets, ExpansionManager, TipsyToolTipsOnClick, PropRel) {
     var PathOptionConstants = (function () {
@@ -26,7 +25,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
         PathOptionConstants.singleNodeConstant = "Single Node";
         PathOptionConstants.singleNodeOrSubordinateConstant = "Single Node or Subordinate of Another Call";
         return PathOptionConstants;
-    })();
+    }());
     exports.PathOptionConstants = PathOptionConstants;
     var Node = (function (_super) {
         __extends(Node, _super);
@@ -45,7 +44,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             return String(d.nodeId);
         };
         return Node;
-    })(GraphView.BaseNode);
+    }(GraphView.BaseNode));
     exports.Node = Node;
     var Link = (function (_super) {
         __extends(Link, _super);
@@ -62,7 +61,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             return d.rawId;
         };
         return Link;
-    })(GraphView.BaseLink);
+    }(GraphView.BaseLink));
     exports.Link = Link;
     var ConceptD3Data = (function (_super) {
         __extends(ConceptD3Data, _super);
@@ -70,7 +69,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             _super.apply(this, arguments);
         }
         return ConceptD3Data;
-    })(GraphView.GraphDataForD3);
+    }(GraphView.GraphDataForD3));
     exports.ConceptD3Data = ConceptD3Data;
     var DeferredCallbacks = (function () {
         function DeferredCallbacks(graph) {
@@ -111,6 +110,9 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             var i = 0;
             for (i = 0; i < this.wrappedParseNodeCallbacks.length; i++) {
                 if (i === maxNodesToGet && !haltExpansions) {
+                    // If we are halting expansion, we need to call for each
+                    // callback, to let the wrapped callback update the expansion set,
+                    // marking it as cut short.
                     break;
                 }
                 // This is vital to communicate to the expansion set for some
@@ -129,7 +131,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             this.wrappedParseNodeCallbacks = [];
         };
         return DeferredCallbacks;
-    })();
+    }());
     var ConceptGraph = (function () {
         function ConceptGraph(graphView, centralConceptUri, softNodeCap, undoBoss) {
             this.graphView = graphView;
@@ -148,12 +150,12 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             this.relationTypeCssClasses = {
                 "is_a": "inheritanceStyleLink",
                 "part_of": "compositionStyleLink",
-                "maps_to": "mappingStyleLink",
+                "maps_to": "mappingStyleLink"
             };
             this.relationLabelConstants = {
                 "inheritance": "is_a",
                 "composition": "part_of",
-                "mapping": "maps_to",
+                "mapping": "maps_to"
             };
             /**
              * When we have too many nodes in the graph, we warn the user about it every time we have added an
@@ -377,15 +379,23 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             var nodesSeen = {};
             edges.forEach(function (edge) {
                 // Currently, the only mapping edges are "maps_to", and all others count as term neighbourhood types.
-                var edgeExpansionType = edge.relationType === _this.relationLabelConstants.mapping ? PathOptionConstants.mappingsNeighborhoodConstant : PathOptionConstants.termNeighborhoodConstant;
+                var edgeExpansionType = edge.relationType === _this.relationLabelConstants.mapping
+                    ? PathOptionConstants.mappingsNeighborhoodConstant
+                    : PathOptionConstants.termNeighborhoodConstant;
                 var otherConceptId = (edge.sourceId === expandingNodeId) ? edge.targetId : edge.sourceId;
                 // Check if temporary, because we want to allow expansion along those edges.
-                if (((_this.isEdgeForTemporaryRenderOnly(edge) && edgeExpansionType === PathOptionConstants.termNeighborhoodConstant) || _this.nodeMayBeExpanded1(otherConceptId, expandingNodeId, nodeInteraction, edgeExpansionType)) && null == nodesSeen[String(otherConceptId)]) {
-                    if ("parents" === specificRelationType && (edge.targetId !== expandingNodeId || edge.relationType !== _this.relationLabelConstants.inheritance)) {
+                if (((_this.isEdgeForTemporaryRenderOnly(edge) && edgeExpansionType === PathOptionConstants.termNeighborhoodConstant)
+                    ||
+                        _this.nodeMayBeExpanded1(otherConceptId, expandingNodeId, nodeInteraction, edgeExpansionType))
+                    && null == nodesSeen[String(otherConceptId)]) {
+                    if ("parents" === specificRelationType
+                        && (edge.targetId !== expandingNodeId || edge.relationType !== _this.relationLabelConstants.inheritance)) {
                     }
-                    else if ("children" === specificRelationType && (edge.sourceId !== expandingNodeId || edge.relationType !== _this.relationLabelConstants.inheritance)) {
+                    else if ("children" === specificRelationType
+                        && (edge.sourceId !== expandingNodeId || edge.relationType !== _this.relationLabelConstants.inheritance)) {
                     }
-                    else if ("other" === specificRelationType && edge.relationType === _this.relationLabelConstants.inheritance) {
+                    else if ("other" === specificRelationType
+                        && edge.relationType === _this.relationLabelConstants.inheritance) {
                     }
                     else {
                         numNewNodesIncoming++;
@@ -422,7 +432,10 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             if (undefined === this.nextNodeWarningCount) {
                 this.nextNodeWarningCount = this.softNodeCap;
             }
-            while (this.graphD3Format.nodes.length < (this.nextNodeWarningCount - this.nodeCapInterval) && this.softNodeCap < this.nextNodeWarningCount) {
+            // If the graph population has shrunk, I want to make sure that expanding it again will offer the user
+            // the capping dialog anew.
+            while (this.graphD3Format.nodes.length < (this.nextNodeWarningCount - this.nodeCapInterval)
+                && this.softNodeCap < this.nextNodeWarningCount) {
                 // We have to account for shrinking graphs. Just because the user said ok to lots of nodes previously
                 // doesn't mean they will say ok again.
                 // Decrement our current cap until we are closer to the existing number of nodes.
@@ -430,7 +443,9 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
                 this.nextNodeWarningCount = Math.max(this.nextNodeWarningCount, this.softNodeCap);
             }
             var dialogOpen = $("#confirm").is(":visible");
-            if (dialogOpen || ((this.graphD3Format.nodes.length + 1) > this.nextNodeWarningCount) || ((this.graphD3Format.nodes.length + numberNewNodesComing) > this.nextNodeWarningCount)) {
+            if (dialogOpen ||
+                ((this.graphD3Format.nodes.length + 1) > this.nextNodeWarningCount)
+                || ((this.graphD3Format.nodes.length + numberNewNodesComing) > this.nextNodeWarningCount)) {
                 // So, this logic lets all possible mappings through, because mappings calls are registered in a quick loop
                 // and the fetches get called before any node is processed from any of those fetches.
                 if (undefined === this.deferredParseNodeCallBack) {
@@ -458,7 +473,15 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             this.deferredParseNodeCallBack.complete(haltExpansion, nodesToAdd);
         };
         ConceptGraph.prototype.refreshNodeCapDialogNodeCount = function (numberNewNodesComing) {
-            $("#nodeCapDialogMessage").empty().append($("<span>").text("You are about to add multiple nodes to the visualization." + "\n" + "In total, ")).append($("<b>").text(this.graphD3Format.nodes.length)).append($("<span>").text(" nodes are in the graph, but ")).append($("<b>").text(numberNewNodesComing)).append($("<span>").text(" more may be added." + "\n\n" + "Would you like to limit the number of nodes? If you change your mind, you can re-expand the concepts/mappings later."));
+            $("#nodeCapDialogMessage")
+                .empty()
+                .append($("<span>").text("You are about to add multiple nodes to the visualization." + "\n"
+                + "In total, "))
+                .append($("<b>").text(this.graphD3Format.nodes.length))
+                .append($("<span>").text(" nodes are in the graph, but "))
+                .append($("<b>").text(numberNewNodesComing))
+                .append($("<span>").text(" more may be added." + "\n\n" +
+                "Would you like to limit the number of nodes? If you change your mind, you can re-expand the concepts/mappings later."));
             $("label#capDialogLabel").text("Load up to: ");
             if (undefined === numberNewNodesComing) {
                 $("input#capDialogInput").attr("max", 20 + "");
@@ -483,11 +506,12 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
                     $("#confirm-container").css("height", "auto");
                     $('.message', dialog.data[0]).append(message);
                     $("div.buttons").css("width", "auto");
-                    var nodesToLoadInput = $("<input>").attr("id", "capDialogInput").attr("name", "capDialogInput").attr({ "type": "number", "min": "0", "max": numberNewNodesComing + "", }).css("width", "4em").change(function () {
-                        $(".yes").text("Add " + $("#capDialogInput").val());
-                    }).keyup(function () {
-                        $(".yes").text("Add " + $("#capDialogInput").val());
-                    }).val(outerThis.nodeCapInterval + "");
+                    var nodesToLoadInput = $("<input>").attr("id", "capDialogInput").attr("name", "capDialogInput")
+                        .attr({ "type": "number", "min": "0", "max": numberNewNodesComing + "" })
+                        .css("width", "4em")
+                        .change(function () { $(".yes").text("Add " + $("#capDialogInput").val()); })
+                        .keyup(function () { $(".yes").text("Add " + $("#capDialogInput").val()); })
+                        .val(outerThis.nodeCapInterval + "");
                     var nodesToLoadLabel = $("<label>").attr("id", "capDialogLabel").attr("for", "capDialogInput"); //.append(nodesToLoadInput);
                     outerThis.refreshNodeCapDialogNodeCount(numberNewNodesComing);
                     // if the user clicks "yes"
@@ -624,7 +648,8 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
          */
         ConceptGraph.prototype.expandMappedConcept = function (newConceptId, newConceptMappingData, relatedConceptId, expansionType, expansionSet) {
             var newNodeUri = this.computeNodeId(newConceptMappingData);
-            if (expansionType === PathOptionConstants.mappingsNeighborhoodConstant && this.nodeMayBeExpanded(newNodeUri, relatedConceptId, expansionType, expansionSet)) {
+            if (expansionType === PathOptionConstants.mappingsNeighborhoodConstant
+                && this.nodeMayBeExpanded(newNodeUri, relatedConceptId, expansionType, expansionSet)) {
                 // Moved node cap check to caller of this, where we have an estimate of incoming nodes.        
                 var url = newConceptMappingData.links.self;
                 var callback = new FetchOneConceptCallback(this, url, newNodeUri, expansionSet);
@@ -658,13 +683,17 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             fetcher.fetch(callback, true);
         };
         ConceptGraph.prototype.nodeMayBeExpanded1 = function (newConceptId, relatedConceptId, nodeRelationExpansionType, desiredRelationType) {
-            return relatedConceptId !== newConceptId && nodeRelationExpansionType === desiredRelationType && !(String(newConceptId) in this.conceptIdNodeMap) && this.nodeIsAccessible(newConceptId);
+            return relatedConceptId !== newConceptId
+                && nodeRelationExpansionType === desiredRelationType
+                && !(String(newConceptId) in this.conceptIdNodeMap)
+                && this.nodeIsAccessible(newConceptId);
         };
         ConceptGraph.prototype.nodeMayBeExpanded = function (newConceptId, relatedConceptId, nodeRelationExpansionType, expansionSet) {
             if (null === expansionSet.parentNode || null === nodeRelationExpansionType) {
                 return false;
             }
-            return relatedConceptId === expansionSet.parentNode.nodeId && this.nodeMayBeExpanded1(newConceptId, expansionSet.parentNode.nodeId, nodeRelationExpansionType, expansionSet.expansionType);
+            return relatedConceptId === expansionSet.parentNode.nodeId
+                && this.nodeMayBeExpanded1(newConceptId, expansionSet.parentNode.nodeId, nodeRelationExpansionType, expansionSet.expansionType);
         };
         /**
          * Some nodes result in 403, 404 or other errors when REST calls re amde, and they will not be available.
@@ -691,12 +720,14 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             // Because we expand for term neighbourhood relation calls, and those come in two flavors
             // (node with properties for children and parents, and just node IDs for compositions)
             // we want to support parsing the data directly as well as fetching additional data.
-            if (this.nodeMayBeExpanded(newConceptId, relatedConceptId, expansionType, expansionSet) && this.nodeIsAccessible(newConceptId)) {
+            if (this.nodeMayBeExpanded(newConceptId, relatedConceptId, expansionType, expansionSet)
+                && this.nodeIsAccessible(newConceptId)) {
                 // Manifest the node; parse the properties if available.
                 // We know that we will get the composition relations via a properties call,
                 // and that has all the data we need from a separate call for properties...
                 // but that subsystem relies on the fact that the node is created already.
-                if (!(conceptPropertiesData === undefined) && Object.keys(conceptPropertiesData).length > 0 && expansionType !== PathOptionConstants.mappingsNeighborhoodConstant) {
+                if (!(conceptPropertiesData === undefined) && Object.keys(conceptPropertiesData).length > 0
+                    && expansionType !== PathOptionConstants.mappingsNeighborhoodConstant) {
                     // Would process the node data available for mappings, but we need the "prefLabel" property,
                     // which is not included therein, so we need a separate call rather than immediate parsing.
                     // The delay in rendering seems to be negligable in practice.
@@ -746,7 +777,8 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             edge.targetId = childIdUri;
             edge.rawId = edge.sourceId + "-to-" + edge.targetId + "-of-" + relationId;
             edge.relationType = relationId;
-            if (relationId === this.relationLabelConstants.inheritance || relationId === this.relationLabelConstants.mapping) {
+            if (relationId === this.relationLabelConstants.inheritance
+                || relationId === this.relationLabelConstants.mapping) {
                 edge.edgePositionSlot = 0;
             }
             else if (relationId === this.relationLabelConstants.composition) {
@@ -859,7 +891,8 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             // any non-mapping arc. Those nodes have higher relevance than a clustered cohort
             // of mutually mapped nodes, which would produce a hairball.
             if (edge.relationType === this.relationLabelConstants.mapping) {
-                if (this.expMan.wasConceptClearedForExpansion(edge.sourceId, PathOptionConstants.mappingsNeighborhoodConstant) || this.expMan.wasConceptClearedForExpansion(edge.targetId, PathOptionConstants.mappingsNeighborhoodConstant)) {
+                if (this.expMan.wasConceptClearedForExpansion(edge.sourceId, PathOptionConstants.mappingsNeighborhoodConstant)
+                    || this.expMan.wasConceptClearedForExpansion(edge.targetId, PathOptionConstants.mappingsNeighborhoodConstant)) {
                     // If one of the endpoints was expanded along mapping neighbourhood space, we will render the edge.
                     return false;
                 }
@@ -889,7 +922,8 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
                     var otherNodeId = (edge.sourceId === conceptNode.nodeId) ? edge.targetId : edge.sourceId;
                     var otherNodeClearedMap = _this.expMan.wasConceptClearedForExpansion(otherNodeId, PathOptionConstants.mappingsNeighborhoodConstant);
                     var otherNodeInGraph = _this.conceptIdNodeMap[String(otherNodeId)] != null;
-                    if (!otherNodeClearedMap && temporaryEdges.indexOf(edge) === -1 && otherNodeInGraph) {
+                    if (!otherNodeClearedMap && temporaryEdges.indexOf(edge) === -1
+                        && otherNodeInGraph) {
                         // If the other node is cleared, the edge should be already rendered.
                         temporaryEdges.push(edge);
                     }
@@ -1115,7 +1149,8 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
                 ontologyAcronym = concept.ontologyAcronym;
                 conceptUri = concept.simpleConceptUri;
             }
-            return "http://" + Utils.getBioportalUrl() + "/ontologies/" + ontologyAcronym + "/classes/" + encodeURIComponent(String(conceptUri)) + "?include=properties,definition,synonym,prefLabel";
+            return "http://" + Utils.getBioportalUrl() + "/ontologies/" + ontologyAcronym + "/classes/" + encodeURIComponent(String(conceptUri))
+                + "?include=properties,definition,synonym,prefLabel";
             //        +"?include=properties";
         };
         //If we can use batch calls for the parent, child and mappings of each node, we save 2 REST calls per node.
@@ -1127,7 +1162,8 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             // Unused currently due to specification issues
             // 400-800 for children, properties each, 500-900 for parents, 500-900 for mappings
             // 500-1.2s for all four combined. Looks like savings to me.
-            return "http://" + Utils.getBioportalUrl() + "/ontologies/" + concept.ontologyAcronym + "/classes/" + concept.conceptUriForIds + "?include=children,parents,mappings,properties";
+            return "http://" + Utils.getBioportalUrl() + "/ontologies/" + concept.ontologyAcronym + "/classes/" + concept.conceptUriForIds
+                + "?include=children,parents,mappings,properties";
         };
         ConceptGraph.prototype.buildBatchRelationUrlAndPostData = function (concepts) {
             // Given a set of concepts, create a batch API call to retrieve their parents, children and mappings
@@ -1140,12 +1176,12 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
                 "http://www.w3.org/2002/07/owl#Class": {
                     "collection": classCollection
                 },
-                "include": "children, parents, mappings, properties",
+                "include": "children, parents, mappings, properties"
             };
             $.each(concepts, function (i, d) {
                 classCollection.push({
                     "class": d.id,
-                    "ontology": d.ontologyUri,
+                    "ontology": d.ontologyUri
                 });
             });
             //  console.log(postObject);
@@ -1175,7 +1211,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
             return {
                 "url": url,
-                "data": postObject,
+                "data": postObject
             };
         };
         ConceptGraph.prototype.nextNodeColor = function (ontologyRawAcronym) {
@@ -1198,7 +1234,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
         };
         ConceptGraph.CONCEPT_URI_SEPARATOR = "::";
         return ConceptGraph;
-    })();
+    }());
     exports.ConceptGraph = ConceptGraph;
     var PathsToRootCallback = (function (_super) {
         __extends(PathsToRootCallback, _super);
@@ -1235,6 +1271,12 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
                         if (newNodesForExpansionGraph[newNodeId] === undefined) {
                             var conceptNode = _this.graph.parseNode(undefined, nodeData, _this.expansionSet);
                             if (null == conceptNode) {
+                                // I feel like...if the ontology happens to have one of the deformed ids
+                                // as a parent, and has valid parents above it, that we need to keep the
+                                // deformed node (with just it's id) as a stand in, for structural purposes.
+                                // But, given these concepts don't have things like subClassOf properties (by
+                                // virtue of not existing in Bioportal), it might be that they will not have
+                                // accessible parents in the paths to root set anyway...
                                 continue;
                             }
                             if (conceptNode.simpleConceptUri === _this.centralConceptUri) {
@@ -1266,6 +1308,9 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
                         }
                     }
                 }
+                // Normally, dispatching relations would be a priority, but we have child-parent relations
+                // implicit in the paths to root data, and we want that parsed ASAP. Then we can ask for the
+                // remaining relations.
                 for (var nodeId in newNodesForExpansionGraph) {
                     var node = newNodesForExpansionGraph[nodeId];
                     var data = collapsedPathsToRootData[node.getEntityId()];
@@ -1275,7 +1320,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
         }
         return PathsToRootCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     var FetchTargetConceptCallback = (function (_super) {
         __extends(FetchTargetConceptCallback, _super);
         function FetchTargetConceptCallback(graph, url, conceptUri, directCallForExpansionType, expansionSet, initSet) {
@@ -1314,7 +1359,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
         }
         return FetchTargetConceptCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     var FetchOneConceptCallback = (function (_super) {
         __extends(FetchOneConceptCallback, _super);
         function FetchOneConceptCallback(graph, url, conceptUri, expansionSet) {
@@ -1348,7 +1393,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
         }
         return FetchOneConceptCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     exports.FetchOneConceptCallback = FetchOneConceptCallback;
     var SearchOneConceptCallback = (function (_super) {
         __extends(SearchOneConceptCallback, _super);
@@ -1432,7 +1477,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             return conceptNode;
         };
         return SearchOneConceptCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     exports.SearchOneConceptCallback = SearchOneConceptCallback;
     /**
      * Similar to FetchOneConcept, except for when we knwo we have the node already.
@@ -1462,7 +1507,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
         }
         return FetchConceptRelationsCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     // currently oriented to grabbing data for a single concept. Might do batch later when that works server side
     // for cross domain requests.
     // Can process mapping, parent, properties, and children, even if not all are passed in.
@@ -1604,7 +1649,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
         }
         return ConceptCompositionRelationsCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     var ConceptChildrenRelationsCallback = (function (_super) {
         __extends(ConceptChildrenRelationsCallback, _super);
         function ConceptChildrenRelationsCallback(graph, url, conceptNode, conceptIdNodeMap, directCallForExpansionType, expansionSet) {
@@ -1668,7 +1713,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
         }
         return ConceptChildrenRelationsCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     var ConceptParentsRelationsCallback = (function (_super) {
         __extends(ConceptParentsRelationsCallback, _super);
         function ConceptParentsRelationsCallback(graph, url, conceptNode, conceptIdNodeMap, directCallForExpansionType, expansionSet) {
@@ -1719,7 +1764,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
         }
         return ConceptParentsRelationsCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     var ConceptMappingsRelationsCallback = (function (_super) {
         __extends(ConceptMappingsRelationsCallback, _super);
         function ConceptMappingsRelationsCallback(graph, url, conceptNode, conceptNodeIdMap, directCallForExpansionType, expansionSet) {
@@ -1770,11 +1815,13 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
                         _this.graph.manifestOrRegisterImplicitRelation(firstId, secondId, _this.graph.relationLabelConstants.mapping);
                         // Catches self referential maps,
                         var newNodeRawUri = _this.graph.computeNodeId(newConceptData);
-                        var edge = _this.graph.expMan.edgeRegistry.getEdgesFor(firstId, secondId).filter(function (e) {
-                            return e.relationType === _this.graph.relationLabelConstants.mapping;
-                        })[0];
+                        var edge = _this.graph.expMan.edgeRegistry.getEdgesFor(firstId, secondId).filter(function (e) { return e.relationType === _this.graph.relationLabelConstants.mapping; })[0];
                         if (null == mappingTargetIds[String(newConceptId)]) {
-                            if (_this.graph.nodeMayBeExpanded(newNodeRawUri, _this.conceptNode.nodeId, PathOptionConstants.mappingsNeighborhoodConstant, _this.expansionSet) || (_this.directCallForExpansionType === PathOptionConstants.mappingsNeighborhoodConstant && edge != null && _this.graph.isEdgeForTemporaryRenderOnly(edge))) {
+                            if (_this.graph.nodeMayBeExpanded(newNodeRawUri, _this.conceptNode.nodeId, PathOptionConstants.mappingsNeighborhoodConstant, _this.expansionSet)
+                                ||
+                                    (_this.directCallForExpansionType === PathOptionConstants.mappingsNeighborhoodConstant
+                                        && edge != null
+                                        && _this.graph.isEdgeForTemporaryRenderOnly(edge))) {
                                 mappingTargetIds[String(newConceptId)] = true;
                                 mappingTargets[String(newConceptId)] = newConceptData;
                                 expectedExpansionCount++;
@@ -1800,5 +1847,6 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "..
             };
         }
         return ConceptMappingsRelationsCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
 });
+//# sourceMappingURL=ConceptGraph.js.map

@@ -30,7 +30,20 @@ define(["require", "exports", "./Utils", "./Menu", "./Utils", "./Menu"], functio
         };
         AbstractFilterWidget.prototype.addResetAndDeleteButtonsToMenuComponents = function (resetHandler, deleteHandler) {
             var menuHeaderContainer = $("#" + this.getClassName() + "OuterContainer");
-            menuHeaderContainer.children(".menuLabel").first().before($("<div>").attr("id", this.getClassName() + "ButtonGapper").addClass(AbstractFilterWidget.menuExpanderButtonIconClass).addClass(AbstractFilterWidget.gapperButtonIconClass)).before($("<div>").attr("id", this.getClassName() + "CheckboxDeleteButton").click(deleteHandler).addClass(AbstractFilterWidget.menuExpanderButtonIconClass).addClass(AbstractFilterWidget.deleteNodesButtonIconClass).attr("title", AbstractFilterWidget.deleteNodesButtonText)).before($("<label>").attr("id", this.getClassName() + "CheckboxResetButton").click(resetHandler).addClass(AbstractFilterWidget.menuExpanderButtonIconClass).addClass(AbstractFilterWidget.resetCheckboxesButtonIconClass).attr("title", AbstractFilterWidget.resetCheckboxesButtonText));
+            menuHeaderContainer.children(".menuLabel").first()
+                .before($("<div>").attr("id", this.getClassName() + "ButtonGapper")
+                .addClass(AbstractFilterWidget.menuExpanderButtonIconClass)
+                .addClass(AbstractFilterWidget.gapperButtonIconClass))
+                .before($("<div>").attr("id", this.getClassName() + "CheckboxDeleteButton")
+                .click(deleteHandler)
+                .addClass(AbstractFilterWidget.menuExpanderButtonIconClass)
+                .addClass(AbstractFilterWidget.deleteNodesButtonIconClass)
+                .attr("title", AbstractFilterWidget.deleteNodesButtonText))
+                .before($("<label>").attr("id", this.getClassName() + "CheckboxResetButton")
+                .click(resetHandler)
+                .addClass(AbstractFilterWidget.menuExpanderButtonIconClass)
+                .addClass(AbstractFilterWidget.resetCheckboxesButtonIconClass)
+                .attr("title", AbstractFilterWidget.resetCheckboxesButtonText));
         };
         AbstractFilterWidget.menuExpanderButtonIconClass = "menuExpanderUtilityButton";
         AbstractFilterWidget.resetCheckboxesButtonIconClass = "resetCheckboxesButton";
@@ -39,6 +52,7 @@ define(["require", "exports", "./Utils", "./Menu", "./Utils", "./Menu"], functio
         AbstractFilterWidget.resetCheckboxesButtonText = "Re-check all of these checkboxes";
         AbstractFilterWidget.deleteNodesButtonText = "Exclude all unchecked and dimmed nodes from graph";
         return AbstractFilterWidget;
-    })();
+    }());
     exports.AbstractFilterWidget = AbstractFilterWidget;
 });
+//# sourceMappingURL=FilterWidget.js.map

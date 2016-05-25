@@ -1,10 +1,9 @@
 ///<amd-dependency path="UndoRedo/BreadcrumbTrail" />
 ///<amd-dependency path="UndoRedo/UndoRedoManager" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "./BreadcrumbTrail", "UndoRedo/BreadcrumbTrail", "UndoRedo/UndoRedoManager"], function (require, exports, BreadcrumbTrail) {
     /**
@@ -20,21 +19,34 @@ define(["require", "exports", "./BreadcrumbTrail", "UndoRedo/BreadcrumbTrail", "
             // of the available undo and redo checkpoints. Openign the list and clicking one of these will also
             // undo or redo the command.
             var _this = this;
-            var undoButton = $("<div>").attr("id", BackForwardBreadcrumbButtons.undoButtonId).addClass(BackForwardBreadcrumbButtons.undoRedoButtonClass).addClass(BackForwardBreadcrumbButtons.undoButtonIconClass).attr("title", BackForwardBreadcrumbButtons.undoButtonText);
-            var redoButton = $("<div>").attr("id", BackForwardBreadcrumbButtons.redoButtonId).addClass(BackForwardBreadcrumbButtons.undoRedoButtonClass).addClass(BackForwardBreadcrumbButtons.redoButtonIconClass).attr("title", BackForwardBreadcrumbButtons.redoButtonText);
-            var undoDropDownButton = $("<div>").addClass(BackForwardBreadcrumbButtons.undoListButtonIconClass).attr("title", BackForwardBreadcrumbButtons.undoListButtonText).addClass(BackForwardBreadcrumbButtons.crumbTextClass);
-            var undoList = $("<div>").attr("id", BackForwardBreadcrumbButtons.undoListButtonId).addClass(BackForwardBreadcrumbButtons.undoRedoListButtonClass).append(undoDropDownButton).append($("<div>").attr("id", BackForwardBreadcrumbButtons.undoListCrumbContainerId).addClass(BackForwardBreadcrumbButtons.undoredoVerticalListContainer));
-            var redoDropDownButton = $("<div>").addClass(BackForwardBreadcrumbButtons.undoListButtonIconClass).attr("title", BackForwardBreadcrumbButtons.redoListButtonText).addClass(BackForwardBreadcrumbButtons.crumbTextClass);
-            var redoList = $("<div>").attr("id", BackForwardBreadcrumbButtons.redoListButtonId).addClass(BackForwardBreadcrumbButtons.undoRedoListButtonClass).append(redoDropDownButton).append($("<div>").attr("id", BackForwardBreadcrumbButtons.redoListCrumbContainerId).addClass(BackForwardBreadcrumbButtons.undoredoVerticalListContainer));
-            undoButton.click(function () {
-                _this.undoRedoModel.undoOneStep();
-            });
-            redoButton.click(function () {
-                _this.undoRedoModel.redoOneStep();
-            });
+            var undoButton = $("<div>").attr("id", BackForwardBreadcrumbButtons.undoButtonId).addClass(BackForwardBreadcrumbButtons.undoRedoButtonClass)
+                .addClass(BackForwardBreadcrumbButtons.undoButtonIconClass)
+                .attr("title", BackForwardBreadcrumbButtons.undoButtonText);
+            var redoButton = $("<div>").attr("id", BackForwardBreadcrumbButtons.redoButtonId).addClass(BackForwardBreadcrumbButtons.undoRedoButtonClass)
+                .addClass(BackForwardBreadcrumbButtons.redoButtonIconClass)
+                .attr("title", BackForwardBreadcrumbButtons.redoButtonText);
+            var undoDropDownButton = $("<div>").addClass(BackForwardBreadcrumbButtons.undoListButtonIconClass)
+                .attr("title", BackForwardBreadcrumbButtons.undoListButtonText)
+                .addClass(BackForwardBreadcrumbButtons.crumbTextClass);
+            var undoList = $("<div>").attr("id", BackForwardBreadcrumbButtons.undoListButtonId).addClass(BackForwardBreadcrumbButtons.undoRedoListButtonClass)
+                .append(undoDropDownButton)
+                .append($("<div>").attr("id", BackForwardBreadcrumbButtons.undoListCrumbContainerId).addClass(BackForwardBreadcrumbButtons.undoredoVerticalListContainer));
+            var redoDropDownButton = $("<div>").addClass(BackForwardBreadcrumbButtons.undoListButtonIconClass)
+                .attr("title", BackForwardBreadcrumbButtons.redoListButtonText)
+                .addClass(BackForwardBreadcrumbButtons.crumbTextClass);
+            var redoList = $("<div>").attr("id", BackForwardBreadcrumbButtons.redoListButtonId).addClass(BackForwardBreadcrumbButtons.undoRedoListButtonClass)
+                .append(redoDropDownButton)
+                .append($("<div>").attr("id", BackForwardBreadcrumbButtons.redoListCrumbContainerId).addClass(BackForwardBreadcrumbButtons.undoredoVerticalListContainer));
+            undoButton.click(function () { _this.undoRedoModel.undoOneStep(); });
+            redoButton.click(function () { _this.undoRedoModel.redoOneStep(); });
             undoDropDownButton.click(this.dropdownClickLambda("#" + BackForwardBreadcrumbButtons.undoListCrumbContainerId));
             redoDropDownButton.click(this.dropdownClickLambda("#" + BackForwardBreadcrumbButtons.redoListCrumbContainerId));
-            $("#" + BackForwardBreadcrumbButtons.breadcrumbMenuId).append(undoList).append(undoButton).append($("<div>").addClass("undo_redo_spacer")).append(redoButton).append(redoList);
+            $("#" + BackForwardBreadcrumbButtons.breadcrumbMenuId)
+                .append(undoList)
+                .append(undoButton)
+                .append($("<div>").addClass("undo_redo_spacer"))
+                .append(redoButton)
+                .append(redoList);
         };
         BackForwardBreadcrumbButtons.prototype.dropdownClickLambda = function (dropdownSelector) {
             $(document).click(function (event) {
@@ -49,7 +61,12 @@ define(["require", "exports", "./BreadcrumbTrail", "UndoRedo/BreadcrumbTrail", "
             var finalCrumb = this.getFinalCrumb();
             var newCrumb = new BreadcrumbTrail.Breadcrumb(command, this);
             // Make it
-            var newCrumbElement = $("<div>").attr("id", this.generateCrumbElementId(command)).addClass(BackForwardBreadcrumbButtons.crumbIdPrefixAndClassName).addClass(BackForwardBreadcrumbButtons.verticalCrumbDivClass).click(newCrumb.breadcrumbClickedLambda(newCrumb)).hover(newCrumb.breadcrumbHoveredLambda(newCrumb), newCrumb.breadcrumbUnhoveredLambda(newCrumb));
+            var newCrumbElement = $("<div>")
+                .attr("id", this.generateCrumbElementId(command))
+                .addClass(BackForwardBreadcrumbButtons.crumbIdPrefixAndClassName)
+                .addClass(BackForwardBreadcrumbButtons.verticalCrumbDivClass)
+                .click(newCrumb.breadcrumbClickedLambda(newCrumb))
+                .hover(newCrumb.breadcrumbHoveredLambda(newCrumb), newCrumb.breadcrumbUnhoveredLambda(newCrumb));
             var crumbName = $("<p>").text(command.getDisplayName()).addClass(BackForwardBreadcrumbButtons.crumbTextClass);
             newCrumbElement.append(crumbName);
             command.addNameUpdateListener(this.generateCrumbElementId(command), function () {
@@ -103,6 +120,8 @@ define(["require", "exports", "./BreadcrumbTrail", "UndoRedo/BreadcrumbTrail", "
             var redoContainer = $("#" + BackForwardBreadcrumbButtons.redoListCrumbContainerId);
             var undoEmpty = true;
             var redoEmpty = true;
+            // Going backwards through commands, we can push them onto redo, and shift them onto
+            // undo (push at head, shift at tail).
             for (var i = this.trailOfCrumbs.length - 1; i >= 0; i--) {
                 var crumb = this.selectCrumbElement(this.trailMap[this.trailOfCrumbs[i]].command);
                 if (i <= activeCommandIndex) {
@@ -155,6 +174,7 @@ define(["require", "exports", "./BreadcrumbTrail", "UndoRedo/BreadcrumbTrail", "
         BackForwardBreadcrumbButtons.verticalCrumbDivClass = "vertical_stack_bread_crumb_div";
         BackForwardBreadcrumbButtons.undoredoVerticalListContainer = "vertical_stack_bread_crumb_container";
         return BackForwardBreadcrumbButtons;
-    })(BreadcrumbTrail.BreadcrumbTrail);
+    }(BreadcrumbTrail.BreadcrumbTrail));
     exports.BackForwardBreadcrumbButtons = BackForwardBreadcrumbButtons;
 });
+//# sourceMappingURL=BackForwardBreadcrumbButtons.js.map

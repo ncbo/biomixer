@@ -3,6 +3,7 @@ define(["require", "exports"], function (require, exports) {
         function ConceptRendererScaler() {
         }
         return ConceptRendererScaler;
-    })();
+    }());
     exports.ConceptRendererScaler = ConceptRendererScaler;
 });
+//# sourceMappingURL=ConceptRenderScaler.js.map

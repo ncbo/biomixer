@@ -24,13 +24,71 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
             $(menuSelector).append(this.containers.outer);
             // Reduce margin on this label
             this.containers.outer.children(".menuLabel").css("margin-top", "4px").css("margin-bottom", "8px");
-            var forceButton = $("<div>").attr("id", "forceLayoutButton").addClass("unselectable").addClass("layoutTextButton").append($("<div>").attr("id", "forceLayoutButtonIcon").css("float", "left").addClass("unselectable").addClass("iconLayoutButton").attr("title", "Force-Directed Layout")).append($("<div>").addClass("layoutText").text("Force"));
-            var circleButton = $("<div>").attr("id", "circleLayoutButton").addClass("unselectable").addClass("layoutTextButton").append($("<div>").attr("id", "circleLayoutButtonIcon").css("float", "left").addClass("unselectable").addClass("iconLayoutButton").attr("title", "Circle Layout")).append($("<div>").addClass("layoutText").text("Circle"));
-            var centerButton = $("<div>").attr("id", "centerLayoutButton").addClass("unselectable").addClass("layoutTextButton").append($("<div>").attr("id", "centerLayoutButtonIcon").css("float", "left").addClass("unselectable").addClass("iconLayoutButton").attr("title", "Center Layout")).append($("<div>").addClass("layoutText").text("Center"));
-            var horizTreeButton = $("<div>").attr("id", "horizontalTreeLayoutButton").addClass("unselectable").addClass("layoutTextButton").append($("<div>").attr("id", "horizontalTreeLayoutButtonIcon").css("float", "left").addClass("unselectable").addClass("iconLayoutButton").attr("title", "Horizontal Tree Layout")).append($("<div>").addClass("layoutText").text("Horizontal"));
-            var vertTreeButton = $("<div>").attr("id", "verticalTreeLayoutButton").addClass("unselectable").addClass("layoutTextButton").append($("<div>").attr("id", "verticalTreeLayoutButtonIcon").css("float", "left").addClass("unselectable").addClass("iconLayoutButton").attr("title", "Vertical Tree Layout")).append($("<div>").addClass("layoutText").text("Vertical"));
-            var radialButton = $("<div>").attr("id", "radialLayoutButton").addClass("unselectable").addClass("layoutTextButton").append($("<div>").attr("id", "radialLayoutButtonIcon").css("float", "left").addClass("unselectable").addClass("iconLayoutButton").attr("title", "Radial Layout")).append($("<div>").addClass("layoutText").text("Radial"));
-            var importButton = $("<input>").attr("id", "importedLayoutButton").addClass("nonIconLayoutButton").attr("type", "button").attr("value", "Imported Layout");
+            var forceButton = $("<div>")
+                .attr("id", "forceLayoutButton")
+                .addClass("unselectable").addClass("layoutTextButton")
+                .append($("<div>")
+                .attr("id", "forceLayoutButtonIcon")
+                .css("float", "left")
+                .addClass("unselectable")
+                .addClass("iconLayoutButton")
+                .attr("title", "Force-Directed Layout"))
+                .append($("<div>").addClass("layoutText").text("Force"));
+            var circleButton = $("<div>")
+                .attr("id", "circleLayoutButton")
+                .addClass("unselectable").addClass("layoutTextButton")
+                .append($("<div>")
+                .attr("id", "circleLayoutButtonIcon")
+                .css("float", "left")
+                .addClass("unselectable")
+                .addClass("iconLayoutButton")
+                .attr("title", "Circle Layout"))
+                .append($("<div>").addClass("layoutText").text("Circle"));
+            var centerButton = $("<div>")
+                .attr("id", "centerLayoutButton")
+                .addClass("unselectable").addClass("layoutTextButton")
+                .append($("<div>")
+                .attr("id", "centerLayoutButtonIcon")
+                .css("float", "left")
+                .addClass("unselectable")
+                .addClass("iconLayoutButton")
+                .attr("title", "Center Layout"))
+                .append($("<div>").addClass("layoutText").text("Center"));
+            var horizTreeButton = $("<div>")
+                .attr("id", "horizontalTreeLayoutButton")
+                .addClass("unselectable").addClass("layoutTextButton")
+                .append($("<div>")
+                .attr("id", "horizontalTreeLayoutButtonIcon")
+                .css("float", "left")
+                .addClass("unselectable")
+                .addClass("iconLayoutButton")
+                .attr("title", "Horizontal Tree Layout"))
+                .append($("<div>").addClass("layoutText").text("Horizontal"));
+            var vertTreeButton = $("<div>")
+                .attr("id", "verticalTreeLayoutButton")
+                .addClass("unselectable").addClass("layoutTextButton")
+                .append($("<div>")
+                .attr("id", "verticalTreeLayoutButtonIcon")
+                .css("float", "left")
+                .addClass("unselectable")
+                .addClass("iconLayoutButton")
+                .attr("title", "Vertical Tree Layout"))
+                .append($("<div>").addClass("layoutText").text("Vertical"));
+            var radialButton = $("<div>")
+                .attr("id", "radialLayoutButton")
+                .addClass("unselectable").addClass("layoutTextButton")
+                .append($("<div>")
+                .attr("id", "radialLayoutButtonIcon")
+                .css("float", "left")
+                .addClass("unselectable")
+                .addClass("iconLayoutButton")
+                .attr("title", "Radial Layout"))
+                .append($("<div>").addClass("layoutText").text("Radial"));
+            var importButton = $("<input>")
+                .attr("id", "importedLayoutButton")
+                .addClass("nonIconLayoutButton")
+                .attr("type", "button")
+                .attr("value", "Imported Layout");
             var firstCol = $("<div>").css("float", "left");
             var secondCol = $("<div>").css("float", "left");
             var footer = $("<div>").css("clear", "both");
@@ -93,9 +151,7 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
         ConceptLayouts.prototype.getLayoutPositionSnapshot = function () {
             var positions = {};
             var graphNodes = this.graph.graphD3Format.nodes;
-            $.each(graphNodes, function (index, node) {
-                positions[String(node.nodeId)] = { x: node.x, y: node.y };
-            });
+            $.each(graphNodes, function (index, node) { positions[String(node.nodeId)] = { x: node.x, y: node.y }; });
             return positions;
         };
         ConceptLayouts.prototype.setLayoutFixedCoordinates = function (layout) {
@@ -167,20 +223,36 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
             // The filtering we do on these is required due to delays in removal caused by animation of node removal.
             // Before I added the D3 transition to the node removal function, this worked fine, but it throws errors
             // when the selection with a runnign transition suddenly loses members.
-            d3.selectAll("g.node_g").filter(function (node, i) {
-                return transitionOnlyFixedNodes ? node.fixed : true;
-            }).filter(function (node, i) {
-                return null !== outerThis.graph.containsNode(node);
-            }).transition().duration(duration).ease("linear").attr("transform", function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            });
+            d3.selectAll("g.node_g")
+                .filter(function (node, i) { return transitionOnlyFixedNodes ? node.fixed : true; })
+                .filter(function (node, i) { return null !== outerThis.graph.containsNode(node); })
+                .transition()
+                .duration(duration)
+                .ease("linear")
+                .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
             // NB If we are doing translateOnlyFixedNodes, will transitioning unfixed arcs break things?
-            d3.selectAll(GraphView.BaseGraphView.linkSvgClass).filter(function (link, i) {
-                return null !== outerThis.graph.containsNodeById(link.sourceId) && null !== outerThis.graph.containsNodeById(link.targetId) && null !== link.source && null !== link.target;
-            }).transition().duration(duration).ease("linear").attr("points", outerThis.graphView.updateArcLineFunc);
-            d3.selectAll(GraphView.BaseGraphView.linkMarkerSvgClass).filter(function (link, i) {
-                return null !== outerThis.graph.containsNodeById(link.sourceId) && null !== outerThis.graph.containsNodeById(link.targetId) && null !== link.source && null !== link.target;
-            }).transition().duration(duration).ease("linear").attr("points", outerThis.graphView.updateArcMarkerFunc);
+            d3.selectAll(GraphView.BaseGraphView.linkSvgClass)
+                .filter(function (link, i) {
+                return null !== outerThis.graph.containsNodeById(link.sourceId)
+                    && null !== outerThis.graph.containsNodeById(link.targetId)
+                    && null !== link.source
+                    && null !== link.target;
+            })
+                .transition()
+                .duration(duration)
+                .ease("linear")
+                .attr("points", outerThis.graphView.updateArcLineFunc);
+            d3.selectAll(GraphView.BaseGraphView.linkMarkerSvgClass)
+                .filter(function (link, i) {
+                return null !== outerThis.graph.containsNodeById(link.sourceId)
+                    && null !== outerThis.graph.containsNodeById(link.targetId)
+                    && null !== link.source
+                    && null !== link.target;
+            })
+                .transition()
+                .duration(duration)
+                .ease("linear")
+                .attr("points", outerThis.graphView.updateArcMarkerFunc);
             window.setTimeout(function () {
                 _this.graphView.stampTimeLayoutModified();
                 _this.graphView.renderMiniMap(true);
@@ -208,11 +280,12 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
                 //                .attr("transform", "scale(" + zoomValue + ")");
                 //            d3.select("#node_container")
                 //                .attr("transform", "scale(" + zoomValue + ")");
-                d3.selectAll("g.node_g").attr("transform", function (d) {
-                    return "translate(" + d.x + ", " + d.y + ")";
-                });
-                d3.selectAll(GraphView.BaseGraphView.linkSvgClass).attr("points", outerThis.graphView.updateArcLineFunc);
-                d3.selectAll(GraphView.BaseGraphView.linkMarkerSvgClass).attr("points", outerThis.graphView.updateArcMarkerFunc);
+                d3.selectAll("g.node_g")
+                    .attr("transform", function (d) { return "translate(" + d.x + ", " + d.y + ")"; });
+                d3.selectAll(GraphView.BaseGraphView.linkSvgClass)
+                    .attr("points", outerThis.graphView.updateArcLineFunc);
+                d3.selectAll(GraphView.BaseGraphView.linkMarkerSvgClass)
+                    .attr("points", outerThis.graphView.updateArcMarkerFunc);
             };
         };
         ConceptLayouts.prototype.getAllOntologyAcronyms = function (graphNodes) {
@@ -256,9 +329,7 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
             var outerThis = this;
             var graphNodes = outerThis.graph.graphD3Format.nodes;
             var graphLinks = outerThis.graph.graphD3Format.links;
-            graphLinks = graphLinks.filter(function (l) {
-                return l.relationType == "is_a";
-            });
+            graphLinks = graphLinks.filter(function (l) { return l.relationType == "is_a"; });
             graphLinks.forEach(function (link) {
                 graphNodes.forEach(function (node) {
                     if (node.nodeId == link.targetId) {
@@ -269,9 +340,7 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
         };
         ConceptLayouts.prototype.getRoots = function (ontologyAcronym, graphNodes, graphLinks) {
             var outerThis = this;
-            var nodes = graphNodes.filter(function (n) {
-                return n.ontologyAcronym == ontologyAcronym;
-            });
+            var nodes = graphNodes.filter(function (n) { return n.ontologyAcronym == ontologyAcronym; });
             var roots = [];
             var isRoot = true;
             nodes.forEach(function (node) {
@@ -351,16 +420,12 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
                 node.treeChildren = outerThis.getChildren(node, graphLinks, graphNodes);
             });
             //remove cycles first on non-inheritance then on inheritance children
-            var nonInheritanceNodes = graphNodes.filter(function (node) {
-                return node.inheritanceChild == false;
-            });
+            var nonInheritanceNodes = graphNodes.filter(function (node) { return node.inheritanceChild == false; });
             nonInheritanceNodes.forEach(function (node) {
                 outerThis.resetGraphValues();
                 outerThis.depthFirstTraversal(node);
             });
-            var inheritanceNodes = graphNodes.filter(function (node) {
-                return node.inheritanceChild == true;
-            });
+            var inheritanceNodes = graphNodes.filter(function (node) { return node.inheritanceChild == true; });
             inheritanceNodes.forEach(function (node) {
                 outerThis.resetGraphValues();
                 outerThis.depthFirstTraversal(node);
@@ -423,7 +488,9 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
                 height = height * (ConceptLayouts.fullTreeDepth + 2) / (ConceptLayouts.fullTreeDepth);
             }
             var ontologies = outerThis.getAllOntologyAcronyms(graphNodes);
-            var mainTree = d3.layout.tree().size([width, height]).children(function (parent) {
+            var mainTree = d3.layout.tree()
+                .size([width, height])
+                .children(function (parent) {
                 if (parent.name == "main_phantom_root") {
                     //create ontology roots
                     var ontologyRoots = [];
@@ -590,10 +657,13 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
                 var graphNodes = outerThis.graph.graphD3Format.nodes;
                 // The nodes may have been fixed in the fixed layout, or when dragging them.
                 // If we are not merely refreshing, let them all be free to move.
-                $.each(graphNodes, function (index, node) {
-                    node.fixed = false;
-                });
-                outerThis.forceLayout.friction(0.3).gravity(0.05).linkStrength(0.1).charge(-800);
+                $.each(graphNodes, function (index, node) { node.fixed = false; });
+                outerThis.forceLayout
+                    .friction(0.3) // use 0.2 friction to get a very circular layout
+                    .gravity(0.05) // 0.5
+                    .linkStrength(0.1)
+                    .charge(-800) // If we use collision, we may not want repulsion, so set to 0 in that case.
+                ;
                 outerThis.forceLayout.on("tick", outerThis.graphView.onLayoutTick());
                 outerThis.forceLayout.start();
             };
@@ -637,6 +707,7 @@ define(["require", "exports", "../GraphView", "../Menu", "./ConceptGraph", "../J
         ConceptLayouts.layoutMenuContainerId = "layoutMenuOuterContainer";
         ConceptLayouts.innerContainerId = "layoutMenuInnerContainer";
         return ConceptLayouts;
-    })();
+    }());
     exports.ConceptLayouts = ConceptLayouts;
 });
+//# sourceMappingURL=ConceptLayouts.js.map

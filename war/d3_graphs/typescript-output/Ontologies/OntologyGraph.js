@@ -4,11 +4,10 @@
 ///<amd-dependency path="ExpansionSets" />
 ///<amd-dependency path="LayoutProvider" />
 ///<amd-dependency path="Ontologies/NodeAreaToggleWidget" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./NodeAreaToggleWidget", "Utils", "FetchFromApi", "GraphView", "ExpansionSets", "LayoutProvider", "Ontologies/NodeAreaToggleWidget"], function (require, exports, Utils, Fetcher, GraphView, NodeAreaToggleWidget) {
     var Node = (function (_super) {
@@ -27,7 +26,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             return String(d.rawAcronym);
         };
         return Node;
-    })(GraphView.BaseNode);
+    }(GraphView.BaseNode));
     exports.Node = Node;
     var Link = (function (_super) {
         __extends(Link, _super);
@@ -38,7 +37,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             return d.source.rawAcronym + "-to-" + d.target.rawAcronym;
         };
         return Link;
-    })(GraphView.BaseLink);
+    }(GraphView.BaseLink));
     exports.Link = Link;
     var OntologyD3Data = (function (_super) {
         __extends(OntologyD3Data, _super);
@@ -46,7 +45,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             _super.apply(this, arguments);
         }
         return OntologyD3Data;
-    })(GraphView.GraphDataForD3);
+    }(GraphView.GraphDataForD3));
     exports.OntologyD3Data = OntologyD3Data;
     var OntologyGraph = (function () {
         // This softNodeCap only affects API dispatch and rendering for nodes past the cap. It is used during
@@ -200,15 +199,19 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             //$.each(acronymsToKeep, function(index, node){console.log("Cropping down to: "+node)});
             // $.each(ontologyNeighbourhoodJsonForGraph.nodes, function(index, node){console.log("Before removal: "+node.rawAcronym)});
             // $.each(ontologyNeighbourhoodJsonForGraph.links, function(index, link){console.log("Before removal: "+link.source.rawAcronym+" and "+link.target.rawAcronym)});
-            this.graphD3Format.nodes = $.grep(this.graphD3Format.nodes, function (value) {
-                return $.inArray(value.rawAcronym, acronymsToKeep) != -1;
-            });
-            this.graphD3Format.links = $.grep(this.graphD3Format.links, function (value) {
-                return $.inArray(value.source.rawAcronym, acronymsToKeep) != -1 && $.inArray(value.target.rawAcronym, acronymsToKeep) != -1;
-            });
-            this.sortedAcronymsByMappingCount = $.grep(this.sortedAcronymsByMappingCount, function (entry) {
-                return acronymsToKeep.indexOf(entry.acronym) != -1;
-            });
+            this.graphD3Format.nodes
+                = $.grep(this.graphD3Format.nodes, function (value) {
+                    return $.inArray(value.rawAcronym, acronymsToKeep) != -1;
+                });
+            this.graphD3Format.links
+                = $.grep(this.graphD3Format.links, function (value) {
+                    return $.inArray(value.source.rawAcronym, acronymsToKeep) != -1
+                        && $.inArray(value.target.rawAcronym, acronymsToKeep) != -1;
+                });
+            this.sortedAcronymsByMappingCount
+                = $.grep(this.sortedAcronymsByMappingCount, function (entry) {
+                    return acronymsToKeep.indexOf(entry.acronym) != -1;
+                });
             // $.each(ontologyNeighbourhoodJsonForGraph.nodes, function(index, node){console.log("After removal: "+node.rawAcronym)});
             // $.each(ontologyNeighbourhoodJsonForGraph.links, function(index, link){console.log("After removal: "+link.source.rawAcronym+" and "+link.target.rawAcronym)});
             this.graphView.removeMissingGraphElements(this.graphD3Format);
@@ -273,14 +276,14 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             return sortFunc;
         };
         return OntologyGraph;
-    })();
+    }());
     exports.OntologyGraph = OntologyGraph;
     // Doesn't need REST call registry, so if I refactor, keep that in mind.
     var OntologyMappingCallback = (function (_super) {
         __extends(OntologyMappingCallback, _super);
         function OntologyMappingCallback(graph, url, centralOntologyAcronym, expansionSet) {
             var _this = this;
-            _super.call(this, url, centralOntologyAcronym, 4 /* fullOntologyMapping */);
+            _super.call(this, url, centralOntologyAcronym, Fetcher.CallbackVarieties.fullOntologyMapping);
             this.graph = graph;
             this.centralOntologyAcronym = centralOntologyAcronym;
             this.expansionSet = expansionSet;
@@ -433,7 +436,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             };
         }
         return OntologyMappingCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     //Doesn't need REST call registry, so if I refactor, keep that in mind.
     /**
      * The primary, possibly sole purpose, of this call is to remove all the
@@ -444,7 +447,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
         __extends(OntologyDetailsCallback, _super);
         function OntologyDetailsCallback(graph, url, ontologyAcronymNodeMap) {
             var _this = this;
-            _super.call(this, url, "", 3 /* metaData */); // only gets called once normally
+            _super.call(this, url, "", Fetcher.CallbackVarieties.metaData); // only gets called once normally
             this.graph = graph;
             this.ontologyAcronymNodeMap = ontologyAcronymNodeMap;
             // Caller of callback has no "this" of interest, so fat arrow works
@@ -494,12 +497,12 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             };
         }
         return OntologyDetailsCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     var OntologyMetricsCallback = (function (_super) {
         __extends(OntologyMetricsCallback, _super);
         function OntologyMetricsCallback(graph, url, node) {
             var _this = this;
-            _super.call(this, url, String(node.rawAcronym), 3 /* metaData */);
+            _super.call(this, url, String(node.rawAcronym), Fetcher.CallbackVarieties.metaData);
             this.graph = graph;
             this.node = node;
             // Caller of callback has no "this" of interest, so fat arrow works
@@ -541,12 +544,12 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             };
         }
         return OntologyMetricsCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     var OntologyDescriptionCallback = (function (_super) {
         __extends(OntologyDescriptionCallback, _super);
         function OntologyDescriptionCallback(graph, url, node) {
             var _this = this;
-            _super.call(this, url, String(node.rawAcronym), 3 /* metaData */);
+            _super.call(this, url, String(node.rawAcronym), Fetcher.CallbackVarieties.metaData);
             this.graph = graph;
             this.node = node;
             // Caller of callback has no "this" of interest, so fat arrow works
@@ -581,7 +584,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
             };
         }
         return OntologyDescriptionCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
     function buildOntologyMappingUrlNewApi(centralOntologyAcronym) {
         return "http://" + Utils.getBioportalUrl() + "/mappings/statistics/ontologies/" + centralOntologyAcronym;
     }
@@ -595,3 +598,4 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
         return "http://" + Utils.getBioportalUrl() + "/ontologies/" + ontologyAcronym + "/latest_submission";
     }
 });
+//# sourceMappingURL=OntologyGraph.js.map

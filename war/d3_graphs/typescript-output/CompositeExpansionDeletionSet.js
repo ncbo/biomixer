@@ -25,9 +25,7 @@ define(["require", "exports", "./GraphModifierCommand", "./DeletionSet", "./Expa
             this.expansionSet = new ExpansionSet.ExpansionSet(id, parentNode, this.graph, liveExpansionSets, null, expansionType);
             this.deletionSet.addAssociatedExpansionSet(this.expansionSet);
             this.graphModifier = new GraphModifierCommand.GraphCompositeNodeCommand(graph, id.getDisplayId(), this.deletionSet, this.expansionSet, liveExpansionSets);
-            this.expansionSet.graphModifier.addNameUpdateListener(id.internalId, function () {
-                _this.updateDisplayName();
-            });
+            this.expansionSet.graphModifier.addNameUpdateListener(id.internalId, function () { _this.updateDisplayName(); });
             if (null != undoRedoBoss) {
                 undoRedoBoss.addCommand(this.graphModifier);
             }
@@ -56,6 +54,7 @@ define(["require", "exports", "./GraphModifierCommand", "./DeletionSet", "./Expa
             return this.graphModifier;
         };
         return InitializationDeletionSet;
-    })();
+    }());
     exports.InitializationDeletionSet = InitializationDeletionSet;
 });
+//# sourceMappingURL=CompositeExpansionDeletionSet.js.map

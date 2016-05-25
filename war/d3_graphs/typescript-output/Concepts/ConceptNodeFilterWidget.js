@@ -4,11 +4,10 @@
 ///<amd-dependency path="../GraphView" />
 ///<amd-dependency path="./ConceptPathsToRoot" />
 ///<amd-dependency path="./ConceptGraph" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../NodeFilterWidget", "../Utils", "../FilterWidget", "../Menu", "../GraphView", "./ConceptPathsToRoot", "./ConceptGraph"], function (require, exports, FilterWidget) {
     /**
@@ -49,11 +48,10 @@ define(["require", "exports", "../NodeFilterWidget", "../Utils", "../FilterWidge
             };
         };
         AbstractConceptNodeFilterWidget.prototype.deleteSelectedCheckboxesLambda = function (computeNodesToDeleteFunc) {
-            return this.graphView.deleteSelectedCheckboxesLambda(function () {
-                return computeNodesToDeleteFunc();
-            });
+            return this.graphView.deleteSelectedCheckboxesLambda(function () { return computeNodesToDeleteFunc(); });
         };
         return AbstractConceptNodeFilterWidget;
-    })(FilterWidget.AbstractNodeFilterWidget);
+    }(FilterWidget.AbstractNodeFilterWidget));
     exports.AbstractConceptNodeFilterWidget = AbstractConceptNodeFilterWidget;
 });
+//# sourceMappingURL=ConceptNodeFilterWidget.js.map

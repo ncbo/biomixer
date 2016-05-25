@@ -11,6 +11,7 @@ define(["require", "exports", "Menu"], function (require, exports) {
             legend.append($("<p>").text("Inner circle represents concepts mapped to the central ontology."));
         };
         return OntologyLegend;
-    })();
+    }());
     exports.OntologyLegend = OntologyLegend;
 });
+//# sourceMappingURL=OntologyLegend.js.map

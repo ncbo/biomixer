@@ -1,11 +1,10 @@
 ///<amd-dependency path="Utils" />
 ///<amd-dependency path="FetchFromApi" />
 ///<amd-dependency path="Concepts/ConceptGraph" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../Utils", "../FetchFromApi", "Utils", "FetchFromApi", "Concepts/ConceptGraph"], function (require, exports, Utils, Fetcher) {
     // Responsible for storing and fetching relational properties of each ontology,
@@ -75,13 +74,13 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "Utils", "FetchFrom
         // For each ontology, if we are currently calling for the values, false; if received, true.
         OntologyPropertyRelationsRegistry.ontologyQueries = {};
         return OntologyPropertyRelationsRegistry;
-    })();
+    }());
     exports.OntologyPropertyRelationsRegistry = OntologyPropertyRelationsRegistry;
     var OntologyRelation = (function () {
         function OntologyRelation() {
         }
         return OntologyRelation;
-    })();
+    }());
     exports.OntologyRelation = OntologyRelation;
     var OntologyRelationSet = (function () {
         function OntologyRelationSet(ontologyAcronym) {
@@ -92,7 +91,7 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "Utils", "FetchFrom
             this.relations[relation.idEscaped] = relation;
         };
         return OntologyRelationSet;
-    })();
+    }());
     exports.OntologyRelationSet = OntologyRelationSet;
     var OntologyPropertyRelationsCallback = (function (_super) {
         __extends(OntologyPropertyRelationsCallback, _super);
@@ -130,5 +129,6 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "Utils", "FetchFrom
             this.ontologyAcronym = conceptNode.ontologyAcronym;
         }
         return OntologyPropertyRelationsCallback;
-    })(Fetcher.CallbackObject);
+    }(Fetcher.CallbackObject));
 });
+//# sourceMappingURL=PropertyRelationsExpander.js.map

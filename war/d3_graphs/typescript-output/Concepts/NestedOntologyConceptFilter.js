@@ -6,11 +6,10 @@
 ///<amd-dependency path="./ConceptPathsToRoot" />
 ///<amd-dependency path="./ConceptGraph" />
 ///<amd-dependency path="../Menu" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./OntologyConceptFilter", "./CherryPickConceptFilter", "../Menu", "../Utils", "../NodeFilterWidget", "./ConceptNodeFilterWidget", "./OntologyConceptFilter", "./CherryPickConceptFilter", "./ConceptPathsToRoot", "./ConceptGraph", "../Menu"], function (require, exports, Utils, ConceptFilterWidget, OntologyFilter, ConceptFilter, Menu) {
     /**
@@ -104,8 +103,13 @@ define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./Ontolo
                     // We store some arbitrary containers of nodes to hide for each checkbox. Seems data consumptive.
                     var checkboxLabel = _this.implementation.generateCheckboxLabel(target);
                     var checkboxColoredSquare = _this.implementation.generateColoredSquareIndicator(target);
-                    var labelExpanderIcon = $("<label>").addClass(Menu.Menu.menuItemExpanderLabelClass).addClass("unselectable").attr("unselectable", "on").addClass(NestedOntologyConceptFilter.NESTED_EXPANDER_CLASS);
-                    var innerHidingContainer = $("<div>").addClass(NestedOntologyConceptFilter.NESTED_CONTAINER_CLASS).attr("id", _this.computeOntologyConceptDivId(target)).css("display", "none");
+                    var labelExpanderIcon = $("<label>").addClass(Menu.Menu.menuItemExpanderLabelClass)
+                        .addClass("unselectable").attr("unselectable", "on") // IE8
+                        .addClass(NestedOntologyConceptFilter.NESTED_EXPANDER_CLASS);
+                    var innerHidingContainer = $("<div>")
+                        .addClass(NestedOntologyConceptFilter.NESTED_CONTAINER_CLASS)
+                        .attr("id", _this.computeOntologyConceptDivId(target))
+                        .css("display", "none");
                     if (_this.filterContainer.children().length === 0) {
                         innerHidingContainer.css("display", "block");
                     }
@@ -136,20 +140,27 @@ define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./Ontolo
                             $(innerHidingContainer).slideToggle('fast', expanderIndicatorUpdate);
                         }
                     };
-                    var checkbox = $("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "").addClass(_this.ontologyFilter.getCheckboxClass()).click(function (event) {
+                    var checkbox = $("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "")
+                        .addClass(_this.ontologyFilter.getCheckboxClass())
+                        .click(function (event) {
                         // I made the span control the +/- toggle, but clicks were going through the
                         // checkbox, toggling both the checkbox and triggering my +/- toggle function.
                         event.stopPropagation();
-                    }).change(function (event) {
+                    })
+                        .change(function (event) {
                         var nodeHideCandidates = outerThis.implementation.computeCheckboxElementDomain(target);
                         outerThis.implementation.checkboxChanged(target, nodeHideCandidates, $(this));
                     });
-                    var spanOfExpanderAndCheckbox = $("<span>").append(labelExpanderIcon).append(checkbox).click(function () {
-                        expanderClickFunction();
-                    });
+                    var spanOfExpanderAndCheckbox = $("<span>").append(labelExpanderIcon).append(checkbox)
+                        .click(function () { expanderClickFunction(); });
                     ;
                     expanderIndicatorUpdate();
-                    _this.filterContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox").mouseenter(outerThis.implementation.checkboxHoveredLambda(target)).mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target)).append(spanOfExpanderAndCheckbox).append($("<label>").attr("for", checkId).append(checkboxColoredSquare + "&nbsp;" + checkboxLabel)).append(innerHidingContainer));
+                    _this.filterContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox")
+                        .mouseenter(outerThis.implementation.checkboxHoveredLambda(target))
+                        .mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target))
+                        .append(spanOfExpanderAndCheckbox)
+                        .append($("<label>").attr("for", checkId)
+                        .append(checkboxColoredSquare + "&nbsp;" + checkboxLabel)).append(innerHidingContainer));
                 }
                 checkboxesPopulatedOrReUsed = checkboxesPopulatedOrReUsed.add("#" + spanId);
             });
@@ -162,10 +173,19 @@ define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./Ontolo
                     // We store some arbitrary containers of nodes to hide for each checkbox. Seems data consumptive.
                     var checkboxLabel = _this.implementation.generateCheckboxLabel(target);
                     var checkboxColoredSquare = _this.implementation.generateColoredSquareIndicator(target);
-                    correspondingOntologyInnerHidingContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox").css("padding-left", "2em").mouseenter(outerThis.implementation.checkboxHoveredLambda(target)).mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target)).append($("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "").addClass(_this.conceptFilter.getCheckboxClass()).change(function () {
+                    correspondingOntologyInnerHidingContainer
+                        .append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox")
+                        .css("padding-left", "2em")
+                        .mouseenter(outerThis.implementation.checkboxHoveredLambda(target))
+                        .mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target))
+                        .append($("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "")
+                        .addClass(_this.conceptFilter.getCheckboxClass())
+                        .change(function () {
                         var nodeHideCandidates = outerThis.implementation.computeCheckboxElementDomain(target);
                         outerThis.implementation.checkboxChanged(target, nodeHideCandidates, $(this));
-                    })).append($("<label>").attr("for", checkId).append(checkboxColoredSquare + "&nbsp;" + checkboxLabel)));
+                    }))
+                        .append($("<label>").attr("for", checkId)
+                        .append(checkboxColoredSquare + "&nbsp;" + checkboxLabel)));
                 }
                 else {
                     // Puts them into the order that the data structure uses
@@ -193,6 +213,7 @@ define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./Ontolo
         NestedOntologyConceptFilter.NESTED_FILTER_CLASSNAME_PARENT_SUFFIX = "Parent";
         NestedOntologyConceptFilter.NESTED_FILTER_CLASSNAME_CHILD_SUFFIX = "Child";
         return NestedOntologyConceptFilter;
-    })(ConceptFilterWidget.AbstractConceptNodeFilterWidget);
+    }(ConceptFilterWidget.AbstractConceptNodeFilterWidget));
     exports.NestedOntologyConceptFilter = NestedOntologyConceptFilter;
 });
+//# sourceMappingURL=NestedOntologyConceptFilter.js.map

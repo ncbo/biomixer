@@ -35,12 +35,23 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
             d3.select("#outerMMSVG").attr("width", "0").attr("height", "0").attr("x", "0").attr("y", "0");
             this.outerCanvas = d3.select(pc);
             this.addDefs();
-            this.miniMap = this.outerCanvas.append("g").attr("class", "minimap");
-            this.minimapKiddle = this.miniMap.append("g").attr("class", "panCanvas").attr("width", 700).attr("height", 600);
-            this.minimapKiddle.append("rect").attr("id", "framerect").attr("width", this._mmwidth).attr("height", this._mmheight);
+            this.miniMap = this.outerCanvas.append("g")
+                .attr("class", "minimap");
+            this.minimapKiddle = this.miniMap.append("g")
+                .attr("class", "panCanvas")
+                .attr("width", 700)
+                .attr("height", 600);
+            this.minimapKiddle.append("rect")
+                .attr("id", "framerect")
+                .attr("width", this._mmwidth)
+                .attr("height", this._mmheight);
             this.container = this.miniMap;
-            var xScale = d3.scale.linear().domain([-this._mmwidth / 2, this._mmwidth / 2]).range([0, this._mmwidth]);
-            var yScale = d3.scale.linear().domain([-this._mmheight / 2, this._mmheight / 2]).range([this._mmheight, 0]);
+            var xScale = d3.scale.linear()
+                .domain([-this._mmwidth / 2, this._mmwidth / 2])
+                .range([0, this._mmwidth]);
+            var yScale = d3.scale.linear()
+                .domain([-this._mmheight / 2, this._mmheight / 2])
+                .range([this._mmheight, 0]);
             this._zoom = parentZoom;
             this._target = parentVisualization;
             this._mmwidth = parseInt(this._target.attr("width"), 10);
@@ -48,10 +59,16 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
             this._minimapScale = this._minimapScale;
             this._x = this._mmwidth + this._minimapPadding;
             this._y = this._mmheight + this._minimapPadding;
-            this.frame = this.container.append("g").attr("class", "frame");
-            this.frame.append("rect").attr("id", "frameRect").attr("width", 30).attr("height", 30).attr("fill", "url(#frameGradient)");
+            this.frame = this.container.append("g")
+                .attr("class", "frame");
+            this.frame.append("rect")
+                .attr("id", "frameRect")
+                .attr("width", 30)
+                .attr("height", 30)
+                .attr("fill", "url(#frameGradient)");
             var dragstarted = false;
-            var drag = d3.behavior.drag().on("dragstart.minimap", function () {
+            var drag = d3.behavior.drag()
+                .on("dragstart.minimap", function () {
                 var currentTime = new Date().getTime();
                 if (_this.parentGraph.getTimeStampLastLayoutModification() + 1000 > currentTime) {
                     return;
@@ -60,7 +77,8 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
                 var frameTranslate = _this.getXYFromTranslate(_this.frame.attr("transform"));
                 _this._frameX = frameTranslate[0];
                 _this._frameY = frameTranslate[1];
-            }).on("drag.minimap", function () {
+            })
+                .on("drag.minimap", function () {
                 d3.event.sourceEvent.stopImmediatePropagation();
                 var currentTime = new Date().getTime();
                 if (!dragstarted || _this.parentGraph.getTimeStampLastLayoutModification() + 1000 > currentTime) {
@@ -78,7 +96,8 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
                 graphY -= d3.event.dy * _this._scale;
                 $("#graph_g").attr("transform", "translate(" + graphX + "," + graphY + ") scale(" + _this._scale + ")");
                 _this._zoom.translate(translate); // got rid of in original and it didn't affect anything
-            }).on("dragend.minimap", function () {
+            })
+                .on("dragend.minimap", function () {
                 dragstarted = false;
             });
             this.frame.call(drag);
@@ -166,17 +185,64 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
         MiniMap.prototype.addDefs = function () {
             // used to be svg from original code
             this.svgDefs = this.outerCanvas.append("defs");
-            var grad = this.svgDefs.append("radialGradient").attr("id", "frameGradient").attr("fx", "50%").attr("fy", "50%").attr("r", "80%").attr("spreadMethod", "pad");
-            grad.append("stop").attr("offset", "0%").attr("stop-color", "white").attr("stop-opacity", "0.1");
-            grad.append("stop").attr("offset", "100%").attr("stop-color", "black").attr("stop-opacity", "0.6");
-            this.svgDefs.append("clipPath").attr("id", "wrapperClipPathDemo01").attr("class", "wrapper clipPath").append("rect").attr("class", "background").attr("width", this._mmwidth).attr("height", this._mmheight);
-            this.svgDefs.append("clipPath").attr("id", "minimapClipPath").attr("width", this._mmwidth).attr("height", this._mmheight).attr("transform", "translate(" + (this._mmwidth + this._minimapPadding) + "," + (this._minimapPadding / 2) + ")").append("rect").attr("class", "background").attr("width", this._mmwidth).attr("height", this._mmheight);
-            var filter = this.svgDefs.append("svg:filter").attr("id", "minimapDropShadow").attr("x", "-20%").attr("y", "-20%").attr("width", "150%").attr("height", "150%");
-            filter.append("svg:feOffset").attr("result", "offOut").attr("in", "SourceGraphic").attr("dx", "1").attr("dy", "1");
-            filter.append("svg:feColorMatrix").attr("result", "matrixOut").attr("in", "offOut").attr("type", "matrix").attr("values", "0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.5 0");
-            filter.append("svg:feGaussianBlur").attr("result", "blurOut").attr("in", "matrixOut").attr("stdDeviation", "10");
-            filter.append("svg:feBlend").attr("in", "SourceGraphic").attr("in2", "blurOut").attr("mode", "normal");
-            var minimapRadialFill = this.svgDefs.append("radialGradient").attr({
+            var grad = this.svgDefs
+                .append("radialGradient")
+                .attr("id", "frameGradient")
+                .attr("fx", "50%")
+                .attr("fy", "50%")
+                .attr("r", "80%")
+                .attr("spreadMethod", "pad");
+            grad.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "white")
+                .attr("stop-opacity", "0.1");
+            grad.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "black")
+                .attr("stop-opacity", "0.6");
+            this.svgDefs.append("clipPath")
+                .attr("id", "wrapperClipPathDemo01")
+                .attr("class", "wrapper clipPath")
+                .append("rect")
+                .attr("class", "background")
+                .attr("width", this._mmwidth)
+                .attr("height", this._mmheight);
+            this.svgDefs.append("clipPath")
+                .attr("id", "minimapClipPath")
+                .attr("width", this._mmwidth)
+                .attr("height", this._mmheight)
+                .attr("transform", "translate(" + (this._mmwidth + this._minimapPadding) + "," + (this._minimapPadding / 2) + ")")
+                .append("rect")
+                .attr("class", "background")
+                .attr("width", this._mmwidth)
+                .attr("height", this._mmheight);
+            var filter = this.svgDefs.append("svg:filter")
+                .attr("id", "minimapDropShadow")
+                .attr("x", "-20%")
+                .attr("y", "-20%")
+                .attr("width", "150%")
+                .attr("height", "150%");
+            filter.append("svg:feOffset")
+                .attr("result", "offOut")
+                .attr("in", "SourceGraphic")
+                .attr("dx", "1")
+                .attr("dy", "1");
+            filter.append("svg:feColorMatrix")
+                .attr("result", "matrixOut")
+                .attr("in", "offOut")
+                .attr("type", "matrix")
+                .attr("values", "0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.5 0");
+            filter.append("svg:feGaussianBlur")
+                .attr("result", "blurOut")
+                .attr("in", "matrixOut")
+                .attr("stdDeviation", "10");
+            filter.append("svg:feBlend")
+                .attr("in", "SourceGraphic")
+                .attr("in2", "blurOut")
+                .attr("mode", "normal");
+            var minimapRadialFill = this.svgDefs
+                .append("radialGradient")
+                .attr({
                 id: "minimapGradient",
                 gradientUnits: "userSpaceOnUse",
                 cx: "500",
@@ -185,9 +251,15 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
                 fx: "500",
                 fy: "500"
             });
-            minimapRadialFill.append("stop").attr("offset", "0%").attr("stop-color", "#FFFFFF");
-            minimapRadialFill.append("stop").attr("offset", "40%").attr("stop-color", "#EEEEEE");
-            minimapRadialFill.append("stop").attr("offset", "100%").attr("stop-color", "#E0E0E0");
+            minimapRadialFill.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", "#FFFFFF");
+            minimapRadialFill.append("stop")
+                .attr("offset", "40%")
+                .attr("stop-color", "#EEEEEE");
+            minimapRadialFill.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", "#E0E0E0");
         };
         MiniMap.prototype.zoomHandlerF = function (newScale, parentProperties) {
             console.log("zoomhandlerF");
@@ -205,7 +277,8 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
                 Math.max(Math.min(translation[0], rbound), lbound),
                 Math.max(Math.min(translation[1], bbound), tbound)
             ];
-            d3.select(".panCanvas, .panCanvas .bg").attr("transform", "translate(" + translation + ")" + " scale(" + scale + ")");
+            d3.select(".panCanvas, .panCanvas .bg")
+                .attr("transform", "translate(" + translation + ")" + " scale(" + scale + ")");
             this._scale = scale;
             this.render();
         }; // startoff zoomed in a bit to show pan/zoom rectangle
@@ -269,7 +342,10 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
                 // If the minimap isn't visible, let's not update it.
                 return;
             }
-            this.svgDefs.select("#frameGradient").attr("width", this._mmwidth).attr("height", this._mmheight);
+            this.svgDefs
+                .select("#frameGradient")
+                .attr("width", this._mmwidth)
+                .attr("height", this._mmheight);
             this._scale = this._zoom.scale();
             this.container.attr("transform", "scale(" + this._minimapScale + ")");
             // When the menu hasn't been shown, and in early processing, this doesn't exist yet:
@@ -277,7 +353,8 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
                 return;
             }
             var graphChanged = true;
-            if (this.parentGraph.getTimeStampLastGraphModification() < this.minimapRefreshLastCallTime && this.parentGraph.getTimeStampLastLayoutModification() < this.minimapRefreshLastCallTime) {
+            if (this.parentGraph.getTimeStampLastGraphModification() < this.minimapRefreshLastCallTime
+                && this.parentGraph.getTimeStampLastLayoutModification() < this.minimapRefreshLastCallTime) {
                 graphChanged = false;
             }
             // We will make a clone of the graph and miniaturize it.
@@ -316,11 +393,16 @@ define(["require", "exports", "./Menu", "./ExportSvgToImage", "./MouseSpinner"],
             }
             var x = -this._zoom.translate()[0] / this._zoom.scale(); // + width/this._zoom.scale()/2; // 
             var y = -this._zoom.translate()[1] / this._zoom.scale(); // + height/this._zoom.scale()/2; // 
-            this.frame.attr("transform", "translate(" + x + "," + y + ")").select(".background, #frameRect").attr("width", width).attr("height", height);
+            this.frame
+                .attr("transform", "translate(" + x + "," + y + ")")
+                .select(".background, #frameRect")
+                .attr("width", width)
+                .attr("height", height);
         };
         MiniMap.minimapContainerOuterContainer = "minimapContainerOuterContainer";
         MiniMap.menuContainerScrollContainerId = "minimapMenuContainerScrollContainer";
         return MiniMap;
-    })();
+    }());
     exports.MiniMap = MiniMap;
 });
+//# sourceMappingURL=MiniMap.js.map

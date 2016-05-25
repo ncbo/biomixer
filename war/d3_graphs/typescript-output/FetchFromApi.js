@@ -1,13 +1,13 @@
 ///<reference path="headers/require.d.ts" />
-///<reference path="headers/d3.d.ts" />
-///<reference path="headers/jquery.d.ts" />
-// ///<reference path="headers/jquery.jsonp.amd.d.ts" />
-///<amd-dependency path="JQueryExtension" />
-///<amd-dependency path="GraphView" />
-///<amd-dependency path="Utils" />
-///<amd-dependency path="MouseSpinner" />
-"use strict";
 define(["require", "exports", './Utils', './MouseSpinner', "JQueryExtension", "GraphView", "Utils", "MouseSpinner"], function (require, exports, Utils, MouseSpinner) {
+    ///<reference path="headers/d3.d.ts" />
+    ///<reference path="headers/jquery.d.ts" />
+    // ///<reference path="headers/jquery.jsonp.amd.d.ts" />
+    ///<amd-dependency path="JQueryExtension" />
+    ///<amd-dependency path="GraphView" />
+    ///<amd-dependency path="Utils" />
+    ///<amd-dependency path="MouseSpinner" />
+    "use strict";
     (function (RestCallStatus) {
         RestCallStatus[RestCallStatus["EXCLUDED"] = 0] = "EXCLUDED";
         RestCallStatus[RestCallStatus["ALLOWED"] = 1] = "ALLOWED";
@@ -79,7 +79,7 @@ define(["require", "exports", './Utils', './MouseSpinner', "JQueryExtension", "G
             this.callbackServedSet = {};
         };
         return RestCallCache;
-    })();
+    }());
     exports.RestCallCache = RestCallCache;
     /**
      * Browser caching can be unreliable, and we don't want to cache between page loads.
@@ -266,7 +266,7 @@ define(["require", "exports", './Utils', './MouseSpinner', "JQueryExtension", "G
         //This registry is used to track REST call privileges and status.
         CacheRegistry.restAndCallbackRegistry = {};
         return CacheRegistry;
-    })();
+    }());
     exports.CacheRegistry = CacheRegistry;
     (function (CallbackVarieties) {
         // Originally added for dealing with aborted expansions. Not used for that.
@@ -301,7 +301,7 @@ define(["require", "exports", './Utils', './MouseSpinner', "JQueryExtension", "G
             return className;
         };
         return CallbackObject;
-    })();
+    }());
     exports.CallbackObject = CallbackObject;
     /*
      * This fetcher system allows the success receiver to call it to see if there has been an error that
@@ -401,7 +401,7 @@ define(["require", "exports", './Utils', './MouseSpinner', "JQueryExtension", "G
                     else {
                         console.log("Code " + jqXHR.status);
                     }
-                },
+                }
             });
         };
         // TODO Using default value of undefined, but we may want the "resultData?: any" optional param syntax instead, or
@@ -515,6 +515,7 @@ define(["require", "exports", './Utils', './MouseSpinner', "JQueryExtension", "G
         };
         RetryingJsonFetcher.userapikey = "";
         return RetryingJsonFetcher;
-    })();
+    }());
     exports.RetryingJsonFetcher = RetryingJsonFetcher;
 });
+//# sourceMappingURL=FetchFromApi.js.map

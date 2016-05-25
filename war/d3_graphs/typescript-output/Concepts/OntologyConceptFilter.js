@@ -3,11 +3,10 @@
 ///<amd-dependency path="./ConceptNodeFilterWidget" />
 ///<amd-dependency path="./ConceptPathsToRoot" />
 ///<amd-dependency path="./ConceptGraph" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../NodeFilterWidget", "./ConceptNodeFilterWidget", "../Utils", "../NodeFilterWidget", "./ConceptNodeFilterWidget", "./ConceptPathsToRoot", "./ConceptGraph"], function (require, exports, FilterWidget, ConceptFilterWidget) {
     var OntologyConceptFilter = (function (_super) {
@@ -28,7 +27,8 @@ define(["require", "exports", "../NodeFilterWidget", "./ConceptNodeFilterWidget"
             return this.getClassName() + "_for_" + acronym;
         };
         OntologyConceptFilter.prototype.computeCheckboxElementDomain = function (acronym) {
-            return this.graphView.sortConceptNodesCentralOntologyName().filter(function (d, i) {
+            return this.graphView.sortConceptNodesCentralOntologyName()
+                .filter(function (d, i) {
                 return d.ontologyAcronym === acronym;
             });
         };
@@ -122,6 +122,7 @@ define(["require", "exports", "../NodeFilterWidget", "./ConceptNodeFilterWidget"
         };
         OntologyConceptFilter.SUB_MENU_TITLE = "Ontologies Displayed";
         return OntologyConceptFilter;
-    })(ConceptFilterWidget.AbstractConceptNodeFilterWidget);
+    }(ConceptFilterWidget.AbstractConceptNodeFilterWidget));
     exports.OntologyConceptFilter = OntologyConceptFilter;
 });
+//# sourceMappingURL=OntologyConceptFilter.js.map

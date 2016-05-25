@@ -6,12 +6,12 @@ define(["require", "exports", "UndoRedo/UndoRedoManager"], function (require, ex
             this.trailMap = {};
         }
         BreadcrumbTrail.prototype.initGui = function () {
-            $("#" + BreadcrumbTrail.breadcrumbMenuId).append($("<div>").attr("id", BreadcrumbTrail.breadcrumbTrailLabelId).append($("<p>").text(BreadcrumbTrail.undoMenuText).addClass(BreadcrumbTrail.crumbTextClass)));
+            $("#" + BreadcrumbTrail.breadcrumbMenuId)
+                .append($("<div>").attr("id", BreadcrumbTrail.breadcrumbTrailLabelId)
+                .append($("<p>").text(BreadcrumbTrail.undoMenuText).addClass(BreadcrumbTrail.crumbTextClass)));
         };
         BreadcrumbTrail.prototype.updateCrumbText = function (crumbNameDisplay, command) {
-            return function () {
-                crumbNameDisplay.text(command.getDisplayName() + BreadcrumbTrail.undoButtonSuffix);
-            };
+            return function () { crumbNameDisplay.text(command.getDisplayName() + BreadcrumbTrail.undoButtonSuffix); };
         };
         /**
          * Call whenever the stack changes (commands added), and when an undo or redo has happened.
@@ -29,9 +29,12 @@ define(["require", "exports", "UndoRedo/UndoRedoManager"], function (require, ex
                     toRemove.push(crumbCommand);
                 }
             }
+            // Actually remove
+            // Have to go backwards through 
             for (var i = toRemove.length - 1; i >= 0; i--) {
                 this.removeCrumbElement(toRemove[i].command);
             }
+            // Now, add the new ones
             for (var i = 0; i < stack.length; i++) {
                 var crumbElement = this.selectCrumbElement(stack[i]);
                 if (0 === crumbElement.length || undefined === this.trailMap[stack[i].getUniqueId()]) {
@@ -53,7 +56,11 @@ define(["require", "exports", "UndoRedo/UndoRedoManager"], function (require, ex
             }
             var newCrumb = new Breadcrumb(command, this);
             // Make it
-            var newCrumbElement = $("<div>").attr("id", this.generateCrumbElementId(command)).addClass(BreadcrumbTrail.crumbIdPrefixAndClassName).click(newCrumb.breadcrumbClickedLambda(newCrumb)).hover(newCrumb.breadcrumbHoveredLambda(newCrumb), newCrumb.breadcrumbUnhoveredLambda(newCrumb));
+            var newCrumbElement = $("<div>")
+                .attr("id", this.generateCrumbElementId(command))
+                .addClass(BreadcrumbTrail.crumbIdPrefixAndClassName)
+                .click(newCrumb.breadcrumbClickedLambda(newCrumb))
+                .hover(newCrumb.breadcrumbHoveredLambda(newCrumb), newCrumb.breadcrumbUnhoveredLambda(newCrumb));
             var crumbName = $("<p>").text(command.getDisplayName() + BreadcrumbTrail.undoButtonSuffix).addClass("crumb_text");
             newCrumbElement.append(crumbName);
             command.addNameUpdateListener(this.generateCrumbElementId(command), this.updateCrumbText(crumbName, command));
@@ -93,11 +100,13 @@ define(["require", "exports", "UndoRedo/UndoRedoManager"], function (require, ex
             return this.getNthCrumb(this.trailOfCrumbs.length - 1);
         };
         BreadcrumbTrail.prototype.updateActiveCommand = function (activeCommand) {
-            this.selectAllCrumbElements().removeClass(BreadcrumbTrail.activeCrumbClassName);
+            this.selectAllCrumbElements()
+                .removeClass(BreadcrumbTrail.activeCrumbClassName);
             var activeCrumb = this.selectCrumbElement(activeCommand);
             this.activeCommandIndex = this.undoRedoModel.getCommandIndex(activeCommand);
             if (activeCommand != null) {
-                this.selectCrumbElement(activeCommand).addClass(BreadcrumbTrail.activeCrumbClassName);
+                this.selectCrumbElement(activeCommand)
+                    .addClass(BreadcrumbTrail.activeCrumbClassName);
             }
             for (var i = this.trailOfCrumbs.length - 1; i >= 0; i--) {
                 var crumb = this.selectCrumbElement(this.trailMap[this.trailOfCrumbs[i]].command);
@@ -135,7 +144,7 @@ define(["require", "exports", "UndoRedo/UndoRedoManager"], function (require, ex
         BreadcrumbTrail.undoMenuText = "Undo/Redo >> ";
         BreadcrumbTrail.undoButtonSuffix = " >";
         return BreadcrumbTrail;
-    })();
+    }());
     exports.BreadcrumbTrail = BreadcrumbTrail;
     var Breadcrumb = (function () {
         function Breadcrumb(command, breadcrumbTrail) {
@@ -172,6 +181,7 @@ define(["require", "exports", "UndoRedo/UndoRedoManager"], function (require, ex
             return this.command;
         };
         return Breadcrumb;
-    })();
+    }());
     exports.Breadcrumb = Breadcrumb;
 });
+//# sourceMappingURL=BreadcrumbTrail.js.map

@@ -11,11 +11,10 @@
 ///<amd-dependency path="Ontologies/NodeAreaToggleWidget" />
 ///<amd-dependency path="Ontologies/OntologyRenderScaler" />
 ///<amd-dependency path="Ontologies/OntologyLegend" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", "../Menu", "../GraphView", "../ExpansionSets", "../TipsyToolTipsOnClick", "./OntologyGraph", "./OntologyRenderScaler", "./OntologyFilterSliders", "./NodeAreaToggleWidget", "./OntologyLegend", "Utils", "Menu", "FetchFromApi", "GraphView", "ExpansionSets", "TipsyToolTips", "TipsyToolTipsOnClick", "UndoRedo/UndoRedoManager", "Ontologies/OntologyGraph", "Ontologies/OntologyFilterSliders", "Ontologies/NodeAreaToggleWidget", "Ontologies/OntologyRenderScaler", "Ontologies/OntologyLegend", "JQueryExtension"], function (require, exports, Utils, MouseSpinner, Fetch, Menu, GraphView, ExpansionSets, TipsyToolTips, OntologyGraph, OntologyRenderScaler, OntologyFilterSliders, NodeAreaToggleWidget, OntologyLegend) {
     // If I don't extend and implement both, I have to define things I want implemented in the base class,
@@ -66,10 +65,21 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             this.legend = new OntologyLegend.OntologyLegend(this.menu);
             // Had to set div#chart.gallery height = 100% in CSS,
             // but this was only required in Firefox. I can't see why.
-            this.vis = d3.select("#chart").append("svg:svg").attr("id", "graphSvg").attr("width", this.visWidth()).attr("height", this.visHeight()).attr("pointer-events", "all").on("click", this.menu.closeMenuLambda()).call(d3.behavior.zoom().on("zoom", this.geometricZoom)).on("click", function () {
+            this.vis = d3.select("#chart").append("svg:svg")
+                .attr("id", "graphSvg")
+                .attr("width", this.visWidth())
+                .attr("height", this.visHeight())
+                .attr("pointer-events", "all")
+                .on("click", this.menu.closeMenuLambda())
+                .call(d3.behavior.zoom().on("zoom", this.geometricZoom))
+                .on("click", function () {
                 TipsyToolTips.closeOtherTipsyTooltips();
             });
-            this.vis.append('svg:rect').attr("width", this.visWidth()).attr("height", this.visHeight()).attr("id", "graphRect").style('fill', 'white');
+            this.vis.append('svg:rect')
+                .attr("width", this.visWidth())
+                .attr("height", this.visHeight())
+                .attr("id", "graphRect")
+                .style('fill', 'white');
             this.vis.append("svg:g").attr("id", "link_container");
             this.vis.append("svg:g").attr("id", "node_container");
             $(window).resize(this.resizedWindowLambda);
@@ -111,11 +121,20 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             //  .on("dragstart", function(){})
             //  .on("dragend", function(){dragging = false;});
             // nodeDragBehavior = forceLayout.drag;
-            this.nodeDragBehavior = d3.behavior.drag().on("dragstart", this.dragstartLambda(this)).on("drag", this.dragmoveLambda(this)).on("dragend", this.dragendLambda(this));
+            this.nodeDragBehavior = d3.behavior.drag()
+                .on("dragstart", this.dragstartLambda(this))
+                .on("drag", this.dragmoveLambda(this))
+                .on("dragend", this.dragendLambda(this));
             // See the gravityAdjust(), which is called in tick() and modulates
             // gravity to keep nodes within the view frame.
             // If charge() is adjusted, the base gravity and tweaking of it probably needs tweaking as well.
-            this.forceLayout.friction(0.9).gravity(.05).charge(-200).linkDistance(this.linkMaxDesiredLength()).size([this.visWidth(), this.visHeight()]).start();
+            this.forceLayout
+                .friction(0.9) // use 0.2 friction to get a very circular layout
+                .gravity(.05) // 0.5
+                .charge(-200) // -100
+                .linkDistance(this.linkMaxDesiredLength())
+                .size([this.visWidth(), this.visHeight()])
+                .start();
             // console.log("Is it force distance or link distance above?");
         };
         OntologyMappingOverview.prototype.dragstartLambda = function (outerThis) {
@@ -149,14 +168,10 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 // Don't need tick if I update the node and associated arcs appropriately.
                 // forceLayout.resume();
                 // ontologyTick(); // this is the key to make it work together with updating both px,py,x,y on d !
-                d3.select(this).attr("transform", function (d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
-                outerThis.vis.selectAll(GraphView.BaseGraphView.linkSvgClass).filter(function (e, i) {
-                    return e.source == d || e.target == d;
-                }).attr("points", function (e) {
-                    return outerThis.updateArcLineFunc(e);
-                });
+                d3.select(this).attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+                outerThis.vis.selectAll(GraphView.BaseGraphView.linkSvgClass)
+                    .filter(function (e, i) { return e.source == d || e.target == d; })
+                    .attr("points", function (e) { return outerThis.updateArcLineFunc(e); });
             };
         };
         OntologyMappingOverview.prototype.dragendLambda = function (outerThis) {
@@ -194,7 +209,7 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 "Num Individuals: ": { "key": "numberOfIndividuals", "style": noWrapStyle },
                 "Num Properties: ": { "key": "numberOfProperties", "style": noWrapStyle },
                 "Num Mappings: ": { "key": "mapped_classes_to_central_node", "style": noWrapStyle },
-                "Mapped: ": { "key": "mapped_classes_to_central_node", "style": noWrapStyle },
+                "Mapped: ": { "key": "mapped_classes_to_central_node", "style": noWrapStyle }
             };
             var outerThis = this;
             $.each(jsonArgs, function (label, properties) {
@@ -230,31 +245,29 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             }
             // Data constancy via key function() passed to data()
             // Link stuff first
-            var links = this.vis.select("#link_container").selectAll(GraphView.BaseGraphView.linkSvgClass).data(linksData, OntologyGraph.Link.D3IdentityFunction);
+            var links = this.vis.select("#link_container")
+                .selectAll(GraphView.BaseGraphView.linkSvgClass).data(linksData, OntologyGraph.Link.D3IdentityFunction);
             // console.log("Before append links: "+links[0].length+" links.enter(): "+links.enter()[0].length+" links.exit(): "+links.exit()[0].length+" links from selectAll: "+vis.selectAll("line.link")[0].length);
             // Add new stuff
-            var enteringLinks = links.enter().append("svg:polyline").attr("class", GraphView.BaseGraphView.linkSvgClassSansDot + " " + GraphView.BaseGraphView.ontologyLinkSvgClassSansDot).attr("id", function (d) {
-                return "link_line_" + d.source.acronymForIds + "-to-" + d.target.acronymForIds;
-            }).on("mouseover", this.highlightHoveredLinkLambda(this)).on("mouseout", this.unhighlightHoveredLinkLambda(this)); //this.removeNodeAndLinkHighlightingLambda(this));
+            var enteringLinks = links.enter().append("svg:polyline")
+                .attr("class", GraphView.BaseGraphView.linkSvgClassSansDot + " " + GraphView.BaseGraphView.ontologyLinkSvgClassSansDot) // Make svg:g like nodes if we need labels
+                .attr("id", function (d) { return "link_line_" + d.source.acronymForIds + "-to-" + d.target.acronymForIds; })
+                .on("mouseover", this.highlightHoveredLinkLambda(this)) // this.highlightLinkLambda(this))
+                .on("mouseout", this.unhighlightHoveredLinkLambda(this)); //this.removeNodeAndLinkHighlightingLambda(this));
             // console.log("After append links: "+links[0].length+" links.enter(): "+links.enter()[0].length+" links.exit(): "+links.exit()[0].length+" links from selectAll: "+vis.selectAll("line.link")[0].length);
             // Update Basic properties
             if (!enteringLinks.empty()) {
-                enteringLinks.attr("data-thickness_basis", function (d) {
-                    return d.value;
-                });
+                enteringLinks
+                    .attr("data-thickness_basis", function (d) { return d.value; });
                 // Update Tool tip
-                enteringLinks.append("title").text(function (d) {
-                    return "Number Of Mappings: " + d.numMappings;
-                }).attr("id", function (d) {
-                    return "link_title_" + d.source.acronymForIds + "-to-" + d.target.acronymForIds;
-                });
+                enteringLinks.append("title") // How would I *update* this if I needed to?
+                    .text(function (d) { return "Number Of Mappings: " + d.numMappings; })
+                    .attr("id", function (d) { return "link_title_" + d.source.acronymForIds + "-to-" + d.target.acronymForIds; });
                 // Update *all* links scalings given new links are present
                 this.renderScaler.updateLinkScalingFactor();
                 // Using double-backed polyline with variable width of fill instead of thickness of line
                 // links.style("stroke-width", (d)=>{ return this.renderScaler.ontologyLinkScalingFunc(d.value); });
-                links.attr("points", function (e) {
-                    return _this.updateArcLineFunc(e);
-                });
+                links.attr("points", function (e) { return _this.updateArcLineFunc(e); });
             }
             if (!enteringLinks.empty()) {
                 this.filterSliders.updateTopMappingsSliderRange();
@@ -267,11 +280,13 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 return [];
             }
             // Node stuff now
-            var nodes = this.vis.select("#node_container").selectAll("g.node_g").data(nodesData, OntologyGraph.Node.D3IdentityFunction);
+            var nodes = this.vis.select("#node_container")
+                .selectAll("g.node_g").data(nodesData, OntologyGraph.Node.D3IdentityFunction);
             // Add new stuff
-            var enteringNodes = nodes.enter().append("svg:g").attr("class", GraphView.BaseGraphView.nodeGSvgClassSansDot).attr("id", function (d) {
-                return "node_g_" + d.acronymForIds;
-            }).call(this.nodeDragBehavior);
+            var enteringNodes = nodes.enter().append("svg:g")
+                .attr("class", GraphView.BaseGraphView.nodeGSvgClassSansDot)
+                .attr("id", function (d) { return "node_g_" + d.acronymForIds; })
+                .call(this.nodeDragBehavior);
             // Easiest to use JQuery to get at existing enter() circles
             // Otherwise we futz with things like the enter()select(function) below
             // I think that the lack of way to grab child elements from the enter() selection while they are
@@ -279,29 +294,45 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             // idioms. This means no D3 implicit selection loops.
             // Therefore I need to update using JQuery selections on unqiue element IDs
             // Basic properties
-            enteringNodes.append("svg:circle").attr("id", function (d) {
-                return "node_circle_" + d.acronymForIds;
-            }).attr("class", GraphView.BaseGraphView.nodeSvgClassSansDot + " " + GraphView.BaseGraphView.ontologyNodeSvgClassSansDot).attr("cx", "0px").attr("cy", "0px").style("fill", this.defaultNodeColor).style("stroke", this.ontologyGraph.darkenColor(this.defaultNodeColor)).attr("data-radius_basis", function (d) {
-                return d.number;
-            }).attr("r", function (d) {
-                return _this.renderScaler.ontologyOuterNodeScalingFunc(d.number, d.rawAcronym);
-            }).on("mouseover", this.highlightHoveredNodeLambda(this, true)).on("mouseout", this.unhighlightHoveredNodeLambda(this, true));
+            enteringNodes
+                .append("svg:circle")
+                .attr("id", function (d) { return "node_circle_" + d.acronymForIds; })
+                .attr("class", GraphView.BaseGraphView.nodeSvgClassSansDot + " " + GraphView.BaseGraphView.ontologyNodeSvgClassSansDot)
+                .attr("cx", "0px")
+                .attr("cy", "0px")
+                .style("fill", this.defaultNodeColor)
+                .style("stroke", this.ontologyGraph.darkenColor(this.defaultNodeColor))
+                .attr("data-radius_basis", function (d) { return d.number; })
+                .attr("r", function (d) { return _this.renderScaler.ontologyOuterNodeScalingFunc(d.number, d.rawAcronym); })
+                .on("mouseover", this.highlightHoveredNodeLambda(this, true))
+                .on("mouseout", this.unhighlightHoveredNodeLambda(this, true));
             // Add a second circle that represents the mapped classes of the ontology.
-            enteringNodes.append("svg:circle").attr("id", function (d) {
-                return "node_circle_inner_" + d.acronymForIds;
-            }).attr("class", GraphView.BaseGraphView.nodeInnerSvgClassSansDot + " " + GraphView.BaseGraphView.ontologyNodeSvgClassSansDot).attr("cx", "0px").attr("cy", "0px").attr("pointer-events", "none").style("fill", this.ontologyGraph.brightenColor(this.defaultNodeColor)).style("stroke", this.ontologyGraph.darkenColor(this.defaultNodeColor)).attr("data-inner_radius_basis", function (d) {
-                return d.mapped_classes_to_central_node;
-            }).attr("data-outer_radius_basis", function (d) {
-                return d.number;
-            }).attr("r", function (d) {
-                return _this.renderScaler.ontologyInnerNodeScalingFunc(d.mapped_classes_to_central_node, d.number, d.rawAcronym);
-            }).on("mouseover", this.highlightHoveredNodeLambda(this, true)).on("mouseout", this.unhighlightHoveredNodeLambda(this, true));
+            enteringNodes
+                .append("svg:circle")
+                .attr("id", function (d) { return "node_circle_inner_" + d.acronymForIds; })
+                .attr("class", GraphView.BaseGraphView.nodeInnerSvgClassSansDot + " " + GraphView.BaseGraphView.ontologyNodeSvgClassSansDot)
+                .attr("cx", "0px")
+                .attr("cy", "0px")
+                .attr("pointer-events", "none") // genius SVG API design! Without this, the central circle messes with popups.
+                .style("fill", this.ontologyGraph.brightenColor(this.defaultNodeColor))
+                .style("stroke", this.ontologyGraph.darkenColor(this.defaultNodeColor))
+                .attr("data-inner_radius_basis", function (d) { return d.mapped_classes_to_central_node; })
+                .attr("data-outer_radius_basis", function (d) { return d.number; })
+                .attr("r", function (d) { return _this.renderScaler.ontologyInnerNodeScalingFunc(d.mapped_classes_to_central_node, d.number, d.rawAcronym); })
+                .on("mouseover", this.highlightHoveredNodeLambda(this, true))
+                .on("mouseout", this.unhighlightHoveredNodeLambda(this, true));
             // Label
-            enteringNodes.append("svg:text").attr("id", function (d) {
-                return "node_text_" + d.acronymForIds;
-            }).attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable").attr("dx", 12).attr("dy", 1).text(function (d) {
-                return d.name;
-            }).style("pointer-events", "none").attr("unselectable", "on").attr("onmousedown", "noselect").attr("onselectstart", "function(){ return false;}");
+            enteringNodes.append("svg:text")
+                .attr("id", function (d) { return "node_text_" + d.acronymForIds; })
+                .attr("class", GraphView.BaseGraphView.nodeLabelSvgClassSansDot + " unselectable")
+                .attr("dx", 12)
+                .attr("dy", 1)
+                .text(function (d) { return d.name; })
+                .style("pointer-events", "none")
+                .attr("unselectable", "on") // IE 8
+                .attr("onmousedown", "noselect") // IE ?
+                .attr("onselectstart", "function(){ return false;}") // IE 8?
+            ;
             enteringNodes.each(TipsyToolTips.nodeTooltipOnClickLambda(this));
             // Would do exit().remove() here if it weren't re-entrant, so to speak.
             //        // XXX Doing this a second time destroys the visualization!
@@ -489,18 +520,15 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 // not modify them!
                 var doLabelUpdateNextTime = false;
                 if (jQuery.now() - lastGravityAdjustmentTime > maxGravityFrequency) {
-                    nodes.attr("transform", function (d) {
-                        return "translate(" + _this.gravityAdjustX(d.x) + "," + _this.gravityAdjustY(d.y) + ")";
-                    });
+                    nodes.attr("transform", function (d) { return "translate(" + _this.gravityAdjustX(d.x) + "," + _this.gravityAdjustY(d.y) + ")"; });
                     lastGravityAdjustmentTime = jQuery.now();
                     doLabelUpdateNextTime = true;
                 }
                 else {
-                    nodes.attr("transform", function (d) {
-                        return "translate(" + d.x + "," + d.y + ")";
-                    });
+                    nodes.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
                 }
-                links.attr("points", _this.updateArcLineFunc);
+                links
+                    .attr("points", _this.updateArcLineFunc);
                 // I want labels to aim out of middle of graph, to make more room
                 // It slows rendering, so I will only do it sometimes
                 // Commented all this out because I liked centering them instead.
@@ -539,25 +567,17 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 // Given a json encoded graph element, update all of the nested elements associated with it
                 // cherry pick elements that we might otherwise get by class "link"
                 var link = this.vis.select("#link_line_" + d.source.acronymForIds + "-to-" + d.target.acronymForIds);
-                link.attr("data-thickness_basis", function (d) {
-                    return d.value;
-                });
-                link.select("title").text(function (d) {
-                    return "Number Of Mappings: " + d.numMappings;
-                });
+                link.attr("data-thickness_basis", function (d) { return d.value; });
+                link.select("title").text(function (d) { return "Number Of Mappings: " + d.numMappings; });
             };
             var updateNodesFromJson = function (i, d) {
                 // Given a json encoded graph element, update all of the nested elements associated with it
                 // cherry pick elements that we might otherwise get by class "node"
                 var node = outerThis.vis.select("#node_g_" + d.acronymForIds);
-                node.select("title").text(function (d) {
-                    return "Number Of Terms: " + d.number + "<br/> and <br/>" + "Number Of Mappings: " + d.mapped_classes_to_central_node;
-                });
-                node.select("text").text(function (d) {
-                    return d.name;
-                }).attr("x", function () {
-                    return -this.getComputedTextLength() / 2;
-                });
+                node.select("title").text(function (d) { return "Number Of Terms: " + d.number + "<br/> and <br/>" + "Number Of Mappings: " + d.mapped_classes_to_central_node; });
+                node.select("text")
+                    .text(function (d) { return d.name; })
+                    .attr("x", function () { return -this.getComputedTextLength() / 2; });
                 var circles = node.select(GraphView.BaseGraphView.nodeSvgClass);
                 circles.attr("data-radius_basis", d.number);
                 circles.transition().style("fill", d.nodeColor).style("stroke", d.nodeStrokeColor);
@@ -567,7 +587,8 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 inner_circles.attr("data-outer_radius_basis", d.number);
                 inner_circles.transition().style("fill", d.innerNodeColor).style("stroke", d.nodeStrokeColor);
                 // Refresh popup if currently open
-                if (outerThis.lastDisplayedTipsy != null && outerThis.lastDisplayedTipsy.css("visibility") == "visible") {
+                if (outerThis.lastDisplayedTipsy != null
+                    && outerThis.lastDisplayedTipsy.css("visibility") == "visible") {
                     $(outerThis.lastDisplayedTipsy).children(".tipsy-inner").html(outerThis.createNodePopupTable(outerThis.lastDisplayedTipsySvg, outerThis.lastDisplayedTipsyData));
                 }
             };
@@ -633,9 +654,7 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 var graphLinks = outerThis.ontologyGraph.graphD3Format.links;
                 // This is the most up to date way to know how many nodes we are laying out, assuming we don't care to position
                 // undisplayed nodes
-                var numberOfNodes = $(GraphView.BaseGraphView.nodeSvgClass).filter(function (i, d) {
-                    return $(d).css("display") !== "none";
-                }).length;
+                var numberOfNodes = $(GraphView.BaseGraphView.nodeSvgClass).filter(function (i, d) { return $(d).css("display") !== "none"; }).length;
                 _this.forceLayout.friction(0.01); // use 0.2 friction to get a very circular layout
                 _this.forceLayout.stop();
                 // We won't be using the central node for this
@@ -674,10 +693,14 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
                 _this.ontologyGraph.centralOntologyNode.x = outerThis.visWidth() / 2;
                 _this.ontologyGraph.centralOntologyNode.y = outerThis.visHeight() / 2;
                 var animationDuration = 400;
-                d3.selectAll("g.node_g").transition().duration(animationDuration).attr("transform", function (d) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                });
-                d3.selectAll(GraphView.BaseGraphView.linkSvgClass).transition().duration(animationDuration).attr("points", _this.updateArcLineFunc);
+                d3.selectAll("g.node_g")
+                    .transition()
+                    .duration(animationDuration)
+                    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+                d3.selectAll(GraphView.BaseGraphView.linkSvgClass)
+                    .transition()
+                    .duration(animationDuration)
+                    .attr("points", _this.updateArcLineFunc);
             };
         };
         OntologyMappingOverview.prototype.prepGraphMenu = function () {
@@ -701,6 +724,7 @@ define(["require", "exports", "../Utils", "../MouseSpinner", "../FetchFromApi", 
             });
         };
         return OntologyMappingOverview;
-    })(GraphView.BaseGraphView);
+    }(GraphView.BaseGraphView));
     exports.OntologyMappingOverview = OntologyMappingOverview;
 });
+//# sourceMappingURL=OntologyMappingOverview.js.map

@@ -143,8 +143,9 @@ define(["require", "exports"], function (require, exports) {
             }
         }
         return HasCallbacks;
-    })();
+    }());
 });
 /*
  *
  */ 
+//# sourceMappingURL=Utils.js.map

@@ -193,13 +193,12 @@ define(["require", "exports", "../Utils", "../GraphView", "Utils", "GraphView", 
             });
             // Firefox renders dx for text poorly, shifting things around oddly,
             // but x works for both Chrome and Firefox.
-            $(GraphView.BaseGraphView.nodeLabelSvgClass).attr("x", function () {
-                return -this.getComputedTextLength() / 2;
-            });
+            $(GraphView.BaseGraphView.nodeLabelSvgClass).attr("x", function () { return -this.getComputedTextLength() / 2; });
             this.graphView.stampTimeGraphModified();
             this.graphView.runCurrentLayout();
         };
         return MappingRangeSliders;
-    })();
+    }());
     exports.MappingRangeSliders = MappingRangeSliders;
 });
+//# sourceMappingURL=OntologyFilterSliders.js.map

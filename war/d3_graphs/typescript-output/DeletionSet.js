@@ -49,7 +49,8 @@ define(["require", "exports", "./GraphModifierCommand", "UndoRedo/UndoRedoManage
                     // is not being deleted in this deletion set, then
                     // the expansion set is still alive (assuming
                     // the expansion set was alive just prior to now).
-                    if (this.graph.containsNode(node) && this.nodes.indexOf(node) === -1) {
+                    if (this.graph.containsNode(node)
+                        && this.nodes.indexOf(node) === -1) {
                         guilty = false;
                         break;
                     }
@@ -59,9 +60,7 @@ define(["require", "exports", "./GraphModifierCommand", "UndoRedo/UndoRedoManage
                 }
             }
             // Execute them.
-            this.liveExpansionSets = this.liveExpansionSets.filter(function (expSet, i) {
-                return -1 === deathRow.indexOf(expSet);
-            });
+            this.liveExpansionSets = this.liveExpansionSets.filter(function (expSet, i) { return -1 === deathRow.indexOf(expSet); });
             this.graphModifier.displayNameUpdated();
         };
         DeletionSet.prototype.getGraphModifier = function () {
@@ -83,6 +82,7 @@ define(["require", "exports", "./GraphModifierCommand", "UndoRedo/UndoRedoManage
             this.associatedExpansionSet = expSet;
         };
         return DeletionSet;
-    })();
+    }());
     exports.DeletionSet = DeletionSet;
 });
+//# sourceMappingURL=DeletionSet.js.map

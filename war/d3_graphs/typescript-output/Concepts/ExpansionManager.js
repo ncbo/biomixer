@@ -110,7 +110,7 @@ define(["require", "exports", "../GraphModifierCommand", "Concepts/ConceptGraph"
             return childSets;
         };
         return ExpansionManager;
-    })();
+    }());
     exports.ExpansionManager = ExpansionManager;
     var EdgeRegistry = (function () {
         function EdgeRegistry() {
@@ -202,6 +202,7 @@ define(["require", "exports", "../GraphModifierCommand", "Concepts/ConceptGraph"
             return this.inaccessibleNodes.indexOf(conceptUri) !== -1;
         };
         return EdgeRegistry;
-    })();
+    }());
     exports.EdgeRegistry = EdgeRegistry;
 });
+//# sourceMappingURL=ExpansionManager.js.map

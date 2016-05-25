@@ -66,6 +66,7 @@ define(["require", "exports"], function (require, exports) {
         MouseSpinner.outstandingSpinnerRegistry = {};
         MouseSpinner.outstandingCount = 0;
         return MouseSpinner;
-    })();
+    }());
     exports.MouseSpinner = MouseSpinner;
 });
+//# sourceMappingURL=MouseSpinner.js.map

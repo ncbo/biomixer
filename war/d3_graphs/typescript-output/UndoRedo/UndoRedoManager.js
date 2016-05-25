@@ -154,6 +154,7 @@ define(["require", "exports", "./BreadcrumbTrail", "./BackForwardBreadcrumbButto
             return this.trail.slice(0, this.currentTrailIndex + 1);
         };
         return UndoRedoManager;
-    })();
+    }());
     exports.UndoRedoManager = UndoRedoManager;
 });
+//# sourceMappingURL=UndoRedoManager.js.map

@@ -4,11 +4,10 @@
 ///<amd-dependency path="Concepts/ConceptPathsToRoot" />
 ///<amd-dependency path="Concepts/ConceptGraph" />
 ///<amd-dependency path="Concepts/PropertyRelationsExpander" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph", "../Utils", "../FilterWidget", "../GraphView", "Concepts/ConceptPathsToRoot", "Concepts/ConceptGraph", "Concepts/PropertyRelationsExpander"], function (require, exports, FilterWidget, GraphView, ConceptGraph) {
     /**
@@ -40,7 +39,10 @@ define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph
             });
             // Make instructions for changing colors
             if (0 === $("#" + "span_color_instructions").length) {
-                var inst = $("<span>").attr("id", "span_color_instructions").text("(Click sample arc for color change)").addClass("unselectable").css("font-style", "italic");
+                var inst = $("<span>").attr("id", "span_color_instructions")
+                    .text("(Click sample arc for color change)")
+                    .addClass("unselectable")
+                    .css("font-style", "italic");
                 this.filterContainer.append(inst);
             }
             // Add new ones
@@ -53,10 +55,17 @@ define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph
                     // TODO Use existing CSS to assign same color to this square
                     var checkboxColoredSquare = _this.generateColoredSquareIndicator(linkTypeLabel, linkTypeToOntology[linkTypeName]);
                     var checkboxSampleArc = _this.generateSampleArcIndicator(linkTypeName, linkTypeToOntology[linkTypeName]);
-                    _this.filterContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox").append($("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "").change(function () {
+                    _this.filterContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox")
+                        .append($("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "")
+                        .change(function () {
                         var linkHideCandidates = outerThis.computeCheckboxElementDomain(linkTypeName);
                         outerThis.checkboxChanged(linkHideCandidates, $(this));
-                    })).append(checkboxSampleArc).append($("<label>").attr("for", checkId).append("&nbsp;" + checkboxLabel)));
+                    }))
+                        .append(checkboxSampleArc)
+                        .append($("<label>").attr("for", checkId)
+                        .append(
+                    // checkboxColoredSquare+
+                    "&nbsp;" + checkboxLabel)));
                 }
                 checkboxesPopulatedOrReUsed = checkboxesPopulatedOrReUsed.add("#" + spanId);
             });
@@ -100,28 +109,39 @@ define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph
             linkData.relationSpecificToOntologyAcronym = relationSpecificToOntologyAcronym;
             var outerThis = this;
             // Make sample edge container
-            d3.select(linkContainer).attr("width", finalTargetXCoordinate).attr("height", 2 * arcHeight).attr("class", function () {
-                return ConceptEdgeTypeFilter.sampleEdgeClassSansDot + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + relationType + " " + _this.graphView.getLinkCssClass(relationType, relationSpecificToOntologyAcronym) + " " + "unselectable";
-            }).attr("id", function () {
-                return "filter_link_g_" + relationType;
-            });
+            d3.select(linkContainer)
+                .attr("width", finalTargetXCoordinate).attr("height", 2 * arcHeight)
+                .attr("class", function () {
+                return ConceptEdgeTypeFilter.sampleEdgeClassSansDot
+                    + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + relationType
+                    + " " + _this.graphView.getLinkCssClass(relationType, relationSpecificToOntologyAcronym)
+                    + " " + "unselectable";
+            })
+                .attr("id", function () { return "filter_link_g_" + relationType; });
             // Make sample marker
             // Make it first because we're going to adjust the line length after,
             // to get the marker centered better.
-            d3.select(linkContainer).append("svg:polyline").attr("class", function () {
-                return ConceptEdgeTypeFilter.sampleMarkerClassSansDot + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + relationType + " " + _this.graphView.getLinkCssClass(relationType, relationSpecificToOntologyAcronym);
-            }).attr("id", function (d) {
-                return "filter_link_marker_" + relationType;
-            }).attr("points", this.graphView.updateArcMarkerFunc(linkData, true));
+            d3.select(linkContainer).append("svg:polyline")
+                .attr("class", function () {
+                return ConceptEdgeTypeFilter.sampleMarkerClassSansDot
+                    + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + relationType
+                    + " " + _this.graphView.getLinkCssClass(relationType, relationSpecificToOntologyAcronym);
+            })
+                .attr("id", function (d) { return "filter_link_marker_" + relationType; })
+                .attr("points", this.graphView.updateArcMarkerFunc(linkData, true));
             // Adjust target endpoint to be desired line length; we had it further out
             // to compensate for marker size.
             linkData.target.x = finalTargetXCoordinate;
             // Make sample edge line
-            d3.select(linkContainer).append("svg:polyline").attr("class", function () {
-                return ConceptEdgeTypeFilter.sampleEdgeClassSansDot + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + relationType + " " + _this.graphView.getLinkCssClass(relationType, relationSpecificToOntologyAcronym);
-            }).attr("id", function () {
-                return "filter_link_line_" + relationType;
-            }).attr("points", this.graphView.updateArcLineFunc(linkData, true)).append("title").text("Click to select color");
+            d3.select(linkContainer).append("svg:polyline")
+                .attr("class", function () {
+                return ConceptEdgeTypeFilter.sampleEdgeClassSansDot
+                    + " " + GraphView.BaseGraphView.linkClassSelectorPrefix + relationType
+                    + " " + _this.graphView.getLinkCssClass(relationType, relationSpecificToOntologyAcronym);
+            })
+                .attr("id", function () { return "filter_link_line_" + relationType; })
+                .attr("points", this.graphView.updateArcLineFunc(linkData, true))
+                .append("title").text("Click to select color");
             // Make click handler overlay
             // In order to have correct clicking behavior combined with a single live
             // spectrum widget for all possible arcs, I needed to put in an extra svg element
@@ -132,7 +152,10 @@ define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph
                 var spectrumOwner = $(this);
                 var proxyId = "filter_link_g_color_box_proxy_" + relationType;
                 var exists = false;
-                d3.select(this).append("svg:rect").attr("id", proxyId).attr("width", finalTargetXCoordinate).attr("height", 2 * arcHeight).style("fill-opacity", "0.0").style("stroke-opacity", "0.0").each(function () {
+                d3.select(this).append("svg:rect").attr("id", proxyId)
+                    .attr("width", finalTargetXCoordinate).attr("height", 2 * arcHeight)
+                    .style("fill-opacity", "0.0").style("stroke-opacity", "0.0")
+                    .each(function () {
                     var spectrumActivator = $(this);
                     spectrumActivator.on("click", function (e) {
                         // Get the actual polyline that will go in here
@@ -144,13 +167,9 @@ define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph
                         // Even though the spectrum color picker will be attached to the svg:g, it works with the line.
                         spectrumOwner.spectrum({
                             color: $.stylesheet("." + outerThis.graphView.getLinkCssClass(relationType, relationSpecificToOntologyAcronym)).css("fill"),
-                            change: function () {
-                                outerThis.updateArcColor(spectrumOwner, sampleArc, relationType, relationSpecificToOntologyAcronym);
-                            },
-                            beforeShow: function () {
-                            },
-                            show: function () {
-                            },
+                            change: function () { outerThis.updateArcColor(spectrumOwner, sampleArc, relationType, relationSpecificToOntologyAcronym); },
+                            beforeShow: function () { },
+                            show: function () { },
                             hide: function () {
                                 outerThis.updateArcColor(spectrumOwner, sampleArc, relationType, relationSpecificToOntologyAcronym);
                                 spectrumOwner.spectrum("destroy");
@@ -161,6 +180,7 @@ define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph
                             palette: [
                                 ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
                                 ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+                                // ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"], // To pale
                                 ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
                                 ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
                                 ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
@@ -188,7 +208,9 @@ define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph
         };
         ConceptEdgeTypeFilter.prototype.computeCheckboxElementDomain = function (linkTypeName) {
             // Special class for this sort of selection is constructed this way, with link_ prefix
-            return d3.selectAll("." + GraphView.BaseGraphView.linkClassSelectorPrefix + linkTypeName + ":not(." + ConceptEdgeTypeFilter.sampleEdgeClassSansDot + ")" + ":not(." + ConceptEdgeTypeFilter.sampleMarkerClassSansDot + ")");
+            return d3.selectAll("." + GraphView.BaseGraphView.linkClassSelectorPrefix + linkTypeName
+                + ":not(." + ConceptEdgeTypeFilter.sampleEdgeClassSansDot + ")"
+                + ":not(." + ConceptEdgeTypeFilter.sampleMarkerClassSansDot + ")");
         };
         ConceptEdgeTypeFilter.prototype.checkboxChanged = function (setOfHideCandidates, checkbox) {
             if (checkbox.is(':checked')) {
@@ -202,6 +224,7 @@ define(["require", "exports", "../FilterWidget", "../GraphView", "./ConceptGraph
         ConceptEdgeTypeFilter.sampleEdgeClassSansDot = "filter_link_sample";
         ConceptEdgeTypeFilter.sampleMarkerClassSansDot = "filter_link_sample_marker";
         return ConceptEdgeTypeFilter;
-    })(FilterWidget.AbstractFilterWidget);
+    }(FilterWidget.AbstractFilterWidget));
     exports.ConceptEdgeTypeFilter = ConceptEdgeTypeFilter;
 });
+//# sourceMappingURL=ConceptEdgeTypeFilter.js.map

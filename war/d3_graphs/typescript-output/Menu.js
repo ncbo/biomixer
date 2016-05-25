@@ -7,9 +7,16 @@ define(["require", "exports"], function (require, exports) {
             if (menuName === void 0) { menuName = Menu.defaultMenuName; }
             this.menuName = menuName;
             // Append the pop-out panel. It will stay hidden except when moused over.
-            var trigger = $("<div>").attr("id", Menu.menuTriggerContainerId).addClass(Menu.topBarButtonClass);
+            var trigger = $("<div>").attr("id", Menu.menuTriggerContainerId)
+                .addClass(Menu.topBarButtonClass);
             $(Menu.menuBarSelector).append(trigger);
-            trigger.append($("<div>").attr("id", Menu.triggerId).addClass("unselectable").text("Menu").append($("<div>").css("float", "right").addClass("unselectable").addClass(Menu.mainMenuButtonClass)));
+            trigger.append($("<div>").attr("id", Menu.triggerId)
+                .addClass("unselectable")
+                .text("Menu")
+                .append($("<div>")
+                .css("float", "right")
+                .addClass("unselectable")
+                .addClass(Menu.mainMenuButtonClass)));
             trigger.append($("<div>").attr("id", Menu.menuId));
             // Opted for click control only
             //$(Menu.triggerId).hover(
@@ -44,22 +51,16 @@ define(["require", "exports"], function (require, exports) {
         };
         Menu.prototype.toggleMenu = function () {
             var _this = this;
-            $("#" + Menu.menuId).slideToggle({ duration: "fast", complete: function () {
-                _this.updateMenuText();
-            } });
+            $("#" + Menu.menuId).slideToggle({ duration: "fast", complete: function () { _this.updateMenuText(); } });
         };
         Menu.prototype.openMenu = function () {
             var _this = this;
-            $("#" + Menu.menuId).slideDown({ duration: 0, complete: function () {
-                _this.updateMenuText();
-            } });
+            $("#" + Menu.menuId).slideDown({ duration: 0, complete: function () { _this.updateMenuText(); } });
         };
         Menu.prototype.closeMenuLambda = function () {
             var _this = this;
             return function () {
-                $("#" + Menu.menuId).slideUp({ duration: 0, complete: function () {
-                    _this.updateMenuText();
-                } });
+                $("#" + Menu.menuId).slideUp({ duration: 0, complete: function () { _this.updateMenuText(); } });
             };
         };
         Menu.prototype.getMenuSelector = function () {
@@ -84,8 +85,10 @@ define(["require", "exports"], function (require, exports) {
                 innerHidingContainer.css("display", "none");
             }
             // This only indicates collapsability and status
-            var labelExpanderIcon = $("<label>").addClass(Menu.menuItemExpanderLabelClass).addClass(Menu.menuExpanderButtonClass).addClass("unselectable").attr("unselectable", "on") // IE8
-            ;
+            var labelExpanderIcon = $("<label>")
+                .addClass(Menu.menuItemExpanderLabelClass)
+                .addClass(Menu.menuExpanderButtonClass)
+                .addClass("unselectable").attr("unselectable", "on");
             var expanderIndicatorUpdateLambda = function (whenComplete) {
                 return function () {
                     if ($(innerHidingContainer).css("display") === "none") {
@@ -102,7 +105,10 @@ define(["require", "exports"], function (require, exports) {
                 };
             };
             // The label labels the section, and acts as a huge collapse button
-            var label = $("<label>").addClass(Menu.menuLabelClass).addClass("unselectable").attr("unselectable", "on").addClass(Menu.expandableMenuLabelClass).text(labelText);
+            var label = $("<label>").addClass(Menu.menuLabelClass)
+                .addClass("unselectable").attr("unselectable", "on") // IE8
+                .addClass(Menu.expandableMenuLabelClass)
+                .text(labelText);
             var expanderClickFunction = function (open, whenComplete) {
                 // Used for the button, as well as for a programmatic callback for when we want to display the submenu
                 // for special purposes.
@@ -150,6 +156,7 @@ define(["require", "exports"], function (require, exports) {
         Menu.hidingMenuContainerClass = "hidingMenu";
         Menu.menuMadeVisibleCallbacks = [];
         return Menu;
-    })();
+    }());
     exports.Menu = Menu;
 });
+//# sourceMappingURL=Menu.js.map

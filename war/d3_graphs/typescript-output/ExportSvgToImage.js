@@ -76,21 +76,26 @@ define(["require", "exports", './MouseSpinner', "MouseSpinner"], function (requi
             canvas.width = w;
             canvas.height = h;
             if (svgStr.indexOf('<?xml version=') == -1) {
-                svgStr = '<?xml version="1.0"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' + svgStr;
+                svgStr =
+                    '<?xml version="1.0"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
+                        +
+                            svgStr;
             }
-            canvg(canvas, svgStr, { log: true, useCORS: true, renderCallback: function (dom) {
-                var dataURL = canvas.toDataURL('image/png');
-                var data = atob(dataURL.substring('data:image/png;base64,'.length));
-                var asArray = new Uint8Array(data.length);
-                for (var i = 0, len = data.length; i < len; ++i) {
-                    asArray[i] = data.charCodeAt(i);
+            canvg(canvas, svgStr, { log: true, useCORS: true,
+                renderCallback: function (dom) {
+                    var dataURL = canvas.toDataURL('image/png');
+                    var data = atob(dataURL.substring('data:image/png;base64,'.length));
+                    var asArray = new Uint8Array(data.length);
+                    for (var i = 0, len = data.length; i < len; ++i) {
+                        asArray[i] = data.charCodeAt(i);
+                    }
+                    var blob = new Blob([asArray.buffer], { type: 'image/png' });
+                    window.navigator.msSaveOrOpenBlob(blob, 'biomixer_export_' + Date.now() + '.png');
+                    $(canvas).remove();
+                    $("#svgHtmlContainer").remove();
+                    MouseSpinner.MouseSpinner.haltSpinner("screenshot");
                 }
-                var blob = new Blob([asArray.buffer], { type: 'image/png' });
-                window.navigator.msSaveOrOpenBlob(blob, 'biomixer_export_' + Date.now() + '.png');
-                $(canvas).remove();
-                $("#svgHtmlContainer").remove();
-                MouseSpinner.MouseSpinner.haltSpinner("screenshot");
-            } });
+            });
         };
         // Modified from Crowbar 2 library:
         ExportSvgToImage.prototype.setInlineStyles = function (svg, stripClasses) {
@@ -117,7 +122,8 @@ define(["require", "exports", './MouseSpinner', "MouseSpinner"], function (requi
                     else {
                         parentValue = null;
                     }
-                    if (parentValue != null && parentValue !== undefined && parentValue !== value && ("" !== value && null !== value && undefined !== value)) {
+                    if (parentValue != null && parentValue !== undefined && parentValue !== value
+                        && ("" !== value && null !== value && undefined !== value)) {
                         // Get rid of things that will be inherited
                         computedStyleStr += key + ":" + value + ";";
                     }
@@ -161,6 +167,7 @@ define(["require", "exports", './MouseSpinner', "MouseSpinner"], function (requi
             }
         };
         return ExportSvgToImage;
-    })();
+    }());
     exports.ExportSvgToImage = ExportSvgToImage;
 });
+//# sourceMappingURL=ExportSvgToImage.js.map

@@ -6,11 +6,10 @@
 ///<amd-dependency path="./ConceptGraph" />
 ///<amd-dependency path="../ExpansionSets" />
 ///<amd-dependency path="../Menu" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./ExpansionSetFilter", "./CherryPickConceptFilter", "../Menu", "../Utils", "../NodeFilterWidget", "./ConceptNodeFilterWidget", "./CherryPickConceptFilter", "./ConceptPathsToRoot", "./ConceptGraph", "../ExpansionSets", "../Menu"], function (require, exports, Utils, ConceptFilterWidget, ExpansionSetFilter, ConceptFilter, Menu) {
     /**
@@ -115,14 +114,17 @@ define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./Expans
                     // We store some arbitrary containers of nodes to hide for each checkbox. Seems data consumptive.
                     var checkboxLabel = _this.implementation.generateCheckboxLabel(target);
                     var checkboxColoredSquare = _this.implementation.generateColoredSquareIndicator(target);
-                    var labelExpanderIcon = $("<label>").addClass(Menu.Menu.menuItemExpanderLabelClass).addClass("unselectable").attr("unselectable", "on").text("+");
-                    var innerHidingContainer = $("<div>").addClass(NestedExpansionSetConceptFilter.NESTED_CONTAINER_CLASS).attr("id", _this.computeExpansionConceptDivId(target)).css("display", "none");
+                    var labelExpanderIcon = $("<label>").addClass(Menu.Menu.menuItemExpanderLabelClass)
+                        .addClass("unselectable").attr("unselectable", "on") // IE8
+                        .text("+");
+                    var innerHidingContainer = $("<div>")
+                        .addClass(NestedExpansionSetConceptFilter.NESTED_CONTAINER_CLASS)
+                        .attr("id", _this.computeExpansionConceptDivId(target))
+                        .css("display", "none");
                     var expanderClickFunction = function (open) {
                         // Used for the button, as well as for a programmatic callback for when we want to display the submenu
                         // for special purposes.
-                        var expanderIndicatorUpdate = function () {
-                            labelExpanderIcon.text($(innerHidingContainer).css("display") === "none" ? "+" : "-");
-                        };
+                        var expanderIndicatorUpdate = function () { labelExpanderIcon.text($(innerHidingContainer).css("display") === "none" ? "+" : "-"); };
                         if (undefined !== open) {
                             if (open) {
                                 $(innerHidingContainer).slideDown('fast', expanderIndicatorUpdate);
@@ -136,26 +138,32 @@ define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./Expans
                             $(innerHidingContainer).slideToggle('fast', expanderIndicatorUpdate);
                         }
                     };
-                    var checkbox = $("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "").addClass(_this.expansionsFilter.getCheckboxClass()).click(function (event) {
+                    var checkbox = $("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "")
+                        .addClass(_this.expansionsFilter.getCheckboxClass())
+                        .click(function (event) {
                         // I made the span control the +/- toggle, but clicks were going through the
                         // checkbox, toggling both the checkbox and triggering my +/- toggle function.
                         event.stopPropagation();
-                    }).change(function (event) {
+                    })
+                        .change(function (event) {
                         var nodeHideCandidates = outerThis.implementation.computeCheckboxElementDomain(target);
                         outerThis.implementation.checkboxChanged(target, nodeHideCandidates, $(this));
                     });
-                    var spanOfExpanderAndCheckbox = $("<span>").append(labelExpanderIcon).append(checkbox).click(function () {
-                        expanderClickFunction();
-                    });
+                    var spanOfExpanderAndCheckbox = $("<span>").append(labelExpanderIcon).append(checkbox)
+                        .click(function () { expanderClickFunction(); });
                     ;
                     labelExpanderIcon.text($(innerHidingContainer).css("display") === "none" ? "+" : "-");
                     var label = $("<label>").attr("for", checkId).append(checkboxColoredSquare + "&nbsp;" + checkboxLabel);
-                    _this.filterContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox").addClass("expSet_" + checkboxSpanClass).mouseenter(outerThis.implementation.checkboxHoveredLambda(target)).mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target)).append(spanOfExpanderAndCheckbox).append(label).append(innerHidingContainer));
+                    _this.filterContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox")
+                        .addClass("expSet_" + checkboxSpanClass)
+                        .mouseenter(outerThis.implementation.checkboxHoveredLambda(target))
+                        .mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target))
+                        .append(spanOfExpanderAndCheckbox)
+                        .append(label)
+                        .append(innerHidingContainer));
                     // As the expansion is performed, update the label text
                     // or use this updateFilterLabelLambda
-                    target.getGraphModifier().addNameUpdateListener(checkId, function () {
-                        _this.updateFilterLabelLambda()(target);
-                    });
+                    target.getGraphModifier().addNameUpdateListener(checkId, function () { _this.updateFilterLabelLambda()(target); });
                 }
                 checkboxesPopulatedOrReUsed = checkboxesPopulatedOrReUsed.add("#" + spanId);
             });
@@ -181,10 +189,20 @@ define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./Expans
                         // We store some arbitrary containers of nodes to hide for each checkbox. Seems data consumptive.
                         var checkboxLabel = _this.implementation.generateCheckboxLabel(target);
                         var checkboxColoredSquare = _this.implementation.generateColoredSquareIndicator(target);
-                        correspondingExpansionInnerHidingContainer.append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox").addClass("concept_" + checkboxSpanClass).css("padding-left", "2em").mouseenter(outerThis.implementation.checkboxHoveredLambda(target)).mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target)).append($("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "").addClass(_this.conceptFilter.getCheckboxClass()).change(function () {
+                        correspondingExpansionInnerHidingContainer
+                            .append($("<span>").attr("id", spanId).addClass(checkboxSpanClass).addClass("filterCheckbox")
+                            .addClass("concept_" + checkboxSpanClass)
+                            .css("padding-left", "2em")
+                            .mouseenter(outerThis.implementation.checkboxHoveredLambda(target))
+                            .mouseleave(outerThis.implementation.checkboxUnhoveredLambda(target))
+                            .append($("<input>").attr("id", checkId).attr("type", "checkbox").attr("value", "on").attr("tabindex", "0").attr("checked", "")
+                            .addClass(_this.conceptFilter.getCheckboxClass())
+                            .change(function () {
                             var nodeHideCandidates = outerThis.implementation.computeCheckboxElementDomain(target);
                             outerThis.implementation.checkboxChanged(target, nodeHideCandidates, $(this));
-                        })).append($("<label>").attr("for", checkId).append(checkboxColoredSquare + "&nbsp;" + checkboxLabel)));
+                        }))
+                            .append($("<label>").attr("for", checkId)
+                            .append(checkboxColoredSquare + "&nbsp;" + checkboxLabel)));
                     }
                     else {
                         // Puts them into the order that the data structure uses
@@ -215,6 +233,7 @@ define(["require", "exports", "../Utils", "./ConceptNodeFilterWidget", "./Expans
         NestedExpansionSetConceptFilter.NESTED_FILTER_CLASSNAME_PARENT_SUFFIX = "Parent";
         NestedExpansionSetConceptFilter.NESTED_FILTER_CLASSNAME_CHILD_SUFFIX = "Child";
         return NestedExpansionSetConceptFilter;
-    })(ConceptFilterWidget.AbstractConceptNodeFilterWidget);
+    }(ConceptFilterWidget.AbstractConceptNodeFilterWidget));
     exports.NestedExpansionSetConceptFilter = NestedExpansionSetConceptFilter;
 });
+//# sourceMappingURL=NestedExpansionSetConceptFilter.js.map

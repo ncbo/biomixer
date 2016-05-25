@@ -2,3 +2,4 @@
 define(["require", "exports"], function (require, exports) {
     ;
 });
+//# sourceMappingURL=LayoutProvider.js.map

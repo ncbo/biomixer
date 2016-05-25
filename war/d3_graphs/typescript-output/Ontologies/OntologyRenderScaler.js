@@ -120,14 +120,10 @@ define(["require", "exports", "./NodeAreaToggleWidget", "../Utils", "../GraphVie
                     outerThis.minNodeRawSize = basis;
                 }
             });
-            circles.transition().attr("r", function (d) {
-                return outerThis.ontologyOuterNodeScalingFunc(this.getAttribute("data-radius_basis"), this.getAttribute("id"));
-            });
+            circles.transition().attr("r", function (d) { return outerThis.ontologyOuterNodeScalingFunc(this.getAttribute("data-radius_basis"), this.getAttribute("id")); });
             // Inner circles use the same scaling factor.
             var innerCircles = this.vis.selectAll(GraphView.BaseGraphView.nodeInnerSvgClass);
-            innerCircles.transition().attr("r", function (d) {
-                return outerThis.ontologyInnerNodeScalingFunc(this.getAttribute("data-inner_radius_basis"), this.getAttribute("data-outer_radius_basis"), this.getAttribute("id"));
-            });
+            innerCircles.transition().attr("r", function (d) { return outerThis.ontologyInnerNodeScalingFunc(this.getAttribute("data-inner_radius_basis"), this.getAttribute("data-outer_radius_basis"), this.getAttribute("id")); });
         };
         OntologyRenderScaler.prototype.updateLinkScalingFactor = function () {
             var outerThis = this;
@@ -171,7 +167,8 @@ define(["require", "exports", "./NodeAreaToggleWidget", "../Utils", "../GraphVie
         };
         OntologyRenderScaler.prototype.linearAreaRelativeScaledRangeValue = function (factor, minOnScreenSize, maxOnScreenSize) {
             var factor = (factor > 1) ? 1.0 : factor;
-            var linearArea = Math.PI * Math.pow(minOnScreenSize, 2) + factor * Math.PI * Math.pow(maxOnScreenSize, 2);
+            var linearArea = Math.PI * Math.pow(minOnScreenSize, 2) + factor
+                * Math.PI * Math.pow(maxOnScreenSize, 2);
             // power of the linear area doesn't work so well
             // linearArea = Math.pow(linearArea, 0.8);
             var diameter = Math.sqrt(linearArea / Math.PI);
@@ -182,6 +179,7 @@ define(["require", "exports", "./NodeAreaToggleWidget", "../Utils", "../GraphVie
             return linearWidth;
         };
         return OntologyRenderScaler;
-    })();
+    }());
     exports.OntologyRenderScaler = OntologyRenderScaler;
 });
+//# sourceMappingURL=OntologyRenderScaler.js.map
