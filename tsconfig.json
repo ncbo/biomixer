@@ -3,6 +3,7 @@
     "rootDir": "typescript-source",
     "outDir": "war/d3_graphs/typescript-output",
     "module": "amd",
+    "noImplicitUseStrict": true,
     "sourceMap": true
   }
 }
