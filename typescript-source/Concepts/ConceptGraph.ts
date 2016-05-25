@@ -1369,7 +1369,7 @@ export class ConceptGraph implements GraphView.Graph<Node> {
     // http://data.bioontology.org/ontologies/SNOMEDCT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FSNOMEDCT%2F82968002/paths_to_root/?format=jsonp&apikey=efcfb6e1-bcf8-4a5d-a46a-3ae8867241a1&callback=__gwt_jsonp__.P0.onSuccess
     buildPathToRootUrlNewApi(centralOntologyAcronym: RawAcronym, centralConceptUri: SimpleConceptURI){
         // String() converts object String back to primitive string. Go figure.
-        return "http://"+Utils.getBioportalUrl()+"/ontologies/"+centralOntologyAcronym+"/classes/"+encodeURIComponent(String(centralConceptUri))+"/paths_to_root/";
+        return "//"+Utils.getBioportalUrl()+"/ontologies/"+centralOntologyAcronym+"/classes/"+encodeURIComponent(String(centralConceptUri))+"/paths_to_root/";
     }
     
     // This is unused. See description. Leaving as documentation.
@@ -1386,7 +1386,7 @@ export class ConceptGraph implements GraphView.Graph<Node> {
     buildMappingsNeighborhoodUrlNewApi(centralOntologyAcronym: RawAcronym, centralConceptUri: SimpleConceptURI){
         // From the mappings results, we add all of the discovered nodes.
         // String() converts object String back to primitive string. Go figure.
-        return "http://"+Utils.getBioportalUrl()+"/ontologies/"+centralOntologyAcronym+"/classes/"+encodeURIComponent(String(centralConceptUri))+"/mappings/";
+        return "//"+Utils.getBioportalUrl()+"/ontologies/"+centralOntologyAcronym+"/classes/"+encodeURIComponent(String(centralConceptUri))+"/mappings/";
     }
     
     buildConceptUrlNewApi(ontologyAcronym: RawAcronym, conceptUri: SimpleConceptURI){
@@ -1400,7 +1400,7 @@ export class ConceptGraph implements GraphView.Graph<Node> {
     
     buildConceptSearchUrlNewApi(conceptUri: SimpleConceptURI){
         // String() converts object String back to primitive string. Go figure.
-        return "http://"+Utils.getBioportalUrl()+"/search/?require_exact_match=true&also_search_properties=false&q="+encodeURIComponent(String(conceptUri));
+        return "//"+Utils.getBioportalUrl()+"/search/?require_exact_match=true&also_search_properties=false&q="+encodeURIComponent(String(conceptUri));
     }
     
     buildConceptCompositionsRelationUrl(concept: Node, ontologyAcronym?: RawAcronym, conceptUri?: SimpleConceptURI){
@@ -1408,7 +1408,7 @@ export class ConceptGraph implements GraphView.Graph<Node> {
             ontologyAcronym = concept.ontologyAcronym
             conceptUri = concept.simpleConceptUri;
         }
-        return "http://"+Utils.getBioportalUrl()+"/ontologies/"+ontologyAcronym+"/classes/"+encodeURIComponent(String(conceptUri))
+        return "//"+Utils.getBioportalUrl()+"/ontologies/"+ontologyAcronym+"/classes/"+encodeURIComponent(String(conceptUri))
         +"?include=properties,definition,synonym,prefLabel";
         //        +"?include=properties";
     }
@@ -1422,14 +1422,14 @@ export class ConceptGraph implements GraphView.Graph<Node> {
         // Unused currently due to specification issues
         // 400-800 for children, properties each, 500-900 for parents, 500-900 for mappings
         // 500-1.2s for all four combined. Looks like savings to me.
-        return "http://"+Utils.getBioportalUrl()+"/ontologies/"+concept.ontologyAcronym+"/classes/"+concept.conceptUriForIds
+        return "//"+Utils.getBioportalUrl()+"/ontologies/"+concept.ontologyAcronym+"/classes/"+concept.conceptUriForIds
         +"?include=children,parents,mappings,properties";
     }
     
     buildBatchRelationUrlAndPostData(concepts: Array<Node>){
         // Given a set of concepts, create a batch API call to retrieve their parents, children and mappings
         // http://stagedata.bioontology.org/documentation#nav_batch
-        var url = "http://"+Utils.getBioportalUrl()+"/batch/";
+        var url = "//"+Utils.getBioportalUrl()+"/batch/";
         // TEMP TEST
         // url = "http://stagedata.bioontology.org/batch?";
         var classCollection = [];

@@ -586,16 +586,16 @@ define(["require", "exports", "../Utils", "../FetchFromApi", "../GraphView", "./
         return OntologyDescriptionCallback;
     }(Fetcher.CallbackObject));
     function buildOntologyMappingUrlNewApi(centralOntologyAcronym) {
-        return "http://" + Utils.getBioportalUrl() + "/mappings/statistics/ontologies/" + centralOntologyAcronym;
+        return "//" + Utils.getBioportalUrl() + "/mappings/statistics/ontologies/" + centralOntologyAcronym;
     }
     function buildOntologyDetailsUrlNewApi() {
-        return "http://" + Utils.getBioportalUrl() + "/ontologies";
+        return "//" + Utils.getBioportalUrl() + "/ontologies";
     }
     function buildOntologyMetricsUrlNewApi(ontologyAcronym) {
-        return "http://" + Utils.getBioportalUrl() + "/ontologies/" + ontologyAcronym + "/metrics";
+        return "//" + Utils.getBioportalUrl() + "/ontologies/" + ontologyAcronym + "/metrics";
     }
     function buildOntologyLatestSubmissionUrlNewApi(ontologyAcronym) {
-        return "http://" + Utils.getBioportalUrl() + "/ontologies/" + ontologyAcronym + "/latest_submission";
+        return "//" + Utils.getBioportalUrl() + "/ontologies/" + ontologyAcronym + "/latest_submission";
     }
 });
 //# sourceMappingURL=OntologyGraph.js.map
