@@ -12,25 +12,25 @@ import ConceptGraph = require("./ConceptGraph");
 // Access must be unified, and due to asynchronous calls, access must queue up callers
 // for when the data is available.
 export class OntologyPropertyRelationsRegistry {
-    
+
     // With the asynchronous callbacks, there is opportunity for multiple attempts to fetch
     // the ontology properties, from disparate sources. All of these sources must have their
     // own callbacks called once the ontology data has been parsed.
     // Thus, we maintain a queue of outstanding callbacks to take care of. Clear after calling.
     private static queuedCallbacks: { [ontologyUri: string]: Array<{()}>} = {};
-    
+
     // For each ontology, if we are currently calling for the values, false; if received, true.
     private static ontologyQueries: { [ontologyUri: string]: OntologyRelationSet } = {};
- 
+
     static addRelationsSet(relations: OntologyRelationSet){
         OntologyPropertyRelationsRegistry.ontologyQueries[String(relations.ontologyAcronym)] = relations;
     }
-    
+
     public static contains(ontologyAcronym: ConceptGraph.RawAcronym): boolean {
         var entry = OntologyPropertyRelationsRegistry.ontologyQueries[String(ontologyAcronym)];
         return entry !== null && entry !== undefined;
     }
-    
+
     /**
      * Is there a relation id registered for the ontology that corresponds with the provided property id
      * (and thus the provided id represents a property relation)?
@@ -41,7 +41,7 @@ export class OntologyPropertyRelationsRegistry {
         return relationSet.relations[escapedPropertyId];
     }
 
-            
+
     public static fetchOntologyPropertyRelations(conceptNode: ConceptGraph.Node, conceptWrappedCallback: {()}){
         // Be sure to prevent each concept call from making additional calls into this...perhaps we should put this call in the ConceptCompositionRelationsCallback,
         // and the registry can keep a queue of callbacks that need this satisfied prior to continuing...
@@ -51,7 +51,7 @@ export class OntologyPropertyRelationsRegistry {
             conceptWrappedCallback();
             return;
         }
-        
+
         // If undefined...if it is null, it means we have made the fetch call from a previous request, and it is
         // pending.
         if(OntologyPropertyRelationsRegistry.ontologyQueries[String(conceptNode.ontologyAcronym)] === undefined){
@@ -65,12 +65,12 @@ export class OntologyPropertyRelationsRegistry {
             var fetcher = new Fetcher.RetryingJsonFetcher(ontologyPropertyRelationsUrl);
             fetcher.fetch(ontologyPropertyRelationsCallback, false);
         }
-        
+
         // Regardless of whether this is the request that triggers the actual fetch, we add the callback to the queue.
         OntologyPropertyRelationsRegistry.queuedCallbacks[String(conceptNode.ontologyAcronym)].push(conceptWrappedCallback);
 
     }
-    
+
     static dispatchCallbacks(ontologyAcronym: ConceptGraph.RawAcronym){
         var callbacks = OntologyPropertyRelationsRegistry.queuedCallbacks[String(ontologyAcronym)];
         for(var i = 0; i < callbacks.length; i++){
@@ -78,11 +78,11 @@ export class OntologyPropertyRelationsRegistry {
         }
         delete OntologyPropertyRelationsRegistry.queuedCallbacks[String(ontologyAcronym)];
     }
-    
+
     private static buildOntologyPropertyRelationsUrl(ontologyAcronym: ConceptGraph.RawAcronym): string {
-        return "http://data.bioontology.org/ontologies/"+ontologyAcronym+"/properties";
+        return "//"+Utils.getBioportalUrl()+"/ontologies/"+ontologyAcronym+"/properties";
     }
-    
+
 }
 
 export class OntologyRelation {
@@ -97,11 +97,11 @@ export class OntologyRelation {
 export class OntologyRelationSet {
     public ontologyAcronym: ConceptGraph.RawAcronym;
     public relations: { [relationIdEscaped: string]: OntologyRelation } = {};
-    
+
     constructor(ontologyAcronym: ConceptGraph.RawAcronym){
         this.ontologyAcronym = ontologyAcronym;
     }
-    
+
     addRelation(relation: OntologyRelation){
         this.relations[relation.idEscaped] = relation;
     }
@@ -118,7 +118,7 @@ class OntologyPropertyRelationsCallback extends Fetcher.CallbackObject {
             super(url, String(conceptNode.nodeId), Fetcher.CallbackVarieties.metaData);
             this.ontologyAcronym = conceptNode.ontologyAcronym;
         }
-    
+
     public callback = (relationsDataRaw: any, textStatus: string, jqXHR: any) => {
         // textStatus and jqXHR will be undefined, because JSONP and cross domain GET don't use XHR.
         // CORS enabled GET and POST do though!
@@ -129,10 +129,10 @@ class OntologyPropertyRelationsCallback extends Fetcher.CallbackObject {
                 return;
             }
         }
-        
-        
+
+
         var relationSet = new OntologyRelationSet(this.ontologyAcronym);
-        
+
         for(var i = 0; i < relationsDataRaw.length; i++){
             var relationsEntry = relationsDataRaw[i];
             var relation = new OntologyRelation();
@@ -150,12 +150,12 @@ class OntologyPropertyRelationsCallback extends Fetcher.CallbackObject {
             // relation.parents = relationsEntry["parents"];
             relationSet.addRelation(relation);
         }
-        
-        
+
+
 
         OntologyPropertyRelationsRegistry.addRelationsSet(relationSet);
         OntologyPropertyRelationsRegistry.dispatchCallbacks(this.ontologyAcronym);
-        
+
     }
 
 }
