@@ -379,7 +379,7 @@ export class Tour {
 //            },
             {
             
-            intro: "<h1 class='introjs-header'>All Done! Questions?</h1> If you have suggestions or comments, contact us at biomixer.chisel@gmail.com  <br/><br/> More documentation is available on the <a target='_blank' href='http://www.bioontology.org/wiki/index.php/Visualizing_Concepts_and_Mappings'>Bioportal Wiki</a>.",
+            intro: "<h1 class='introjs-header'>All Done! Questions?</h1> If you have suggestions or comments, contact us at biomixer.chisel@gmail.com  <br/><br/> More documentation is available on the <a target='_blank' href='https://www.bioontology.org/wiki/Visualizing_Concepts_and_Mappings'>Bioportal Wiki</a>.",
                 position: "bottom"
             },
             ]
